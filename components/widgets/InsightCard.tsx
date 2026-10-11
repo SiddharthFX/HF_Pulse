@@ -44,7 +44,7 @@ export function InsightCard({
         <button
           type="button"
           onClick={() => scrollToSection('models')}
-          className="mt-4 inline-flex items-center gap-1 text-[13px] font-medium text-ink transition-colors hover:text-jade-700"
+          className="mt-3 inline-flex min-h-10 items-center gap-1 text-[13px] font-medium text-ink transition-colors hover:text-jade-700 sm:mt-4 sm:min-h-0"
         >
           View breakdown
           <ChevronRight aria-hidden="true" className="h-3.5 w-3.5" strokeWidth={2} />

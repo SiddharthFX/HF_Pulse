@@ -144,7 +144,7 @@ export function RepoSection({
 
         <div className="flex flex-wrap items-center gap-2">
           {/* Recency Time Filter Buttons */}
-          <div className="flex h-8 items-center rounded-[var(--radius-inner)] bg-surface-2 p-0.5">
+          <div className="flex h-11 items-center rounded-[var(--radius-inner)] bg-surface-2 p-0.5 sm:h-8">
             {TIME_FILTERS.map((tf) => (
               <button
                 key={tf.value}
@@ -152,7 +152,7 @@ export function RepoSection({
                 onClick={() => setTimeFilter(tf.value)}
                 aria-pressed={timeFilter === tf.value}
                 className={cn(
-                  'h-7 rounded-[11px] px-2.5 text-[12px] font-medium transition-colors duration-[160ms]',
+                  'h-10 rounded-[11px] px-3.5 text-[13px] font-medium transition-colors duration-[160ms] sm:h-7 sm:px-2.5 sm:text-[12px]',
                   timeFilter === tf.value
                     ? 'bg-surface text-ink shadow-[0_1px_2px_rgba(16,20,18,.06)]'
                     : 'text-ink-3 hover:text-ink-2',
@@ -226,7 +226,7 @@ function ViewToggle({
     <div
       role="group"
       aria-label="View mode"
-      className="inline-flex h-8 items-center gap-0.5 rounded-[var(--radius-inner)] bg-surface-2 p-0.5"
+      className="inline-flex h-11 items-center gap-0.5 rounded-[var(--radius-inner)] bg-surface-2 p-0.5 sm:h-8"
     >
       <ToggleButton
         active={value === 'grid'}
@@ -264,7 +264,7 @@ function ToggleButton({
       aria-pressed={active}
       onClick={onClick}
       className={cn(
-        'inline-flex h-7 w-8 items-center justify-center rounded-[8px]',
+        'inline-flex h-10 w-11 items-center justify-center rounded-[8px] sm:h-7 sm:w-8',
         'transition-colors duration-[140ms]',
         active ? 'bg-surface text-ink shadow-[0_1px_2px_rgba(16,20,18,.06)]' : 'text-ink-3 hover:text-ink-2',
       )}

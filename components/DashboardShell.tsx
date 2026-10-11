@@ -153,7 +153,7 @@ function ShellBody({ payload }: { payload: DashboardPayload }) {
                     />
                   </span>
                   <div className="min-w-0">
-                    <div className="mb-2 flex flex-wrap items-center gap-2 text-[9px] font-bold uppercase tracking-[0.14em] text-jade-700 sm:text-[9.5px]">
+                    <div className="mb-2 flex flex-wrap items-center gap-2 text-[10.5px] font-bold uppercase tracking-[0.12em] text-jade-700 sm:text-[10.5px]">
                       <span className="inline-flex items-center gap-1.5 rounded-full border border-jade-100 bg-jade-50 px-2 py-0.5 sm:px-2.5 sm:py-1">
                         <span className="h-1.5 w-1.5 rounded-full bg-jade-500" />
                         Public Hub snapshot
@@ -190,7 +190,7 @@ function ShellBody({ payload }: { payload: DashboardPayload }) {
                 </div>
               </div>
 
-              <div className="relative flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-jade-100/80 bg-surface-2/70 px-5 py-3 text-[10.5px] text-ink-3 sm:px-7 lg:px-8">
+              <div className="relative flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-jade-100/80 bg-surface-2/70 px-5 py-3 text-[11px] text-ink-3 sm:px-7 lg:px-8">
                 <span className="flex items-center gap-1.5" suppressHydrationWarning>
                   <Clock aria-hidden="true" className="h-3.5 w-3.5 text-jade-600" strokeWidth={1.8} />
                   Last fetched {formatRelativeDate(payload.fetchedAt)}
@@ -297,7 +297,7 @@ function HeroMetric({ value, label }: { value: number; label: string }) {
       <p className="num text-[16px] font-bold leading-none tracking-[-0.035em] text-ink sm:text-[20px]">
         {value}
       </p>
-      <p className="mt-1 truncate text-[9px] font-semibold uppercase tracking-[0.08em] text-ink-3 sm:text-[9.5px]">
+      <p className="mt-1 truncate text-[10.5px] font-semibold uppercase tracking-[0.08em] text-ink-3">
         {label}
       </p>
     </div>

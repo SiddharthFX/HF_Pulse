@@ -108,8 +108,8 @@ export function RangeSelect<T extends string>({
           }
         }}
         className={cn(
-          'inline-flex h-8 items-center gap-1.5 rounded-[var(--radius-inner)]',
-          'bg-surface-2 px-3 text-[12px] font-medium text-ink-2',
+          'inline-flex h-10 items-center gap-1.5 rounded-[var(--radius-inner)] sm:h-8',
+          'bg-surface-2 px-3.5 text-[13px] font-medium text-ink-2 sm:px-3 sm:text-[12px]',
           'transition-colors duration-[160ms] hover:bg-surface-3',
         )}
       >

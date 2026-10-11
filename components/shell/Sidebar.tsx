@@ -89,7 +89,7 @@ export function Sidebar({
               <span className="block text-[15px] font-bold leading-none tracking-[-0.01em] text-ink">
                 {ORG_DISPLAY_NAME}
               </span>
-              <span className="mt-1.5 block text-[9px] font-semibold uppercase tracking-[0.17em] text-ink-3">
+              <span className="mt-1.5 block text-[10.5px] font-semibold uppercase tracking-[0.14em] text-ink-3">
                 Hub Analytics
               </span>
             </span>
@@ -99,7 +99,7 @@ export function Sidebar({
 
       <nav className="flex-1 overflow-y-auto overflow-x-hidden scrollbar-none">
         {!isCollapsed ? (
-          <p className="mb-2 px-7 text-[9.5px] font-bold uppercase tracking-[0.18em] text-ink-3/70">
+          <p className="mb-2 px-7 text-[10.5px] font-bold uppercase tracking-[0.16em] text-ink-3/70">
             Workspace
           </p>
         ) : null}
@@ -118,7 +118,7 @@ export function Sidebar({
         <div className={cn('my-5 h-px bg-border', isCollapsed ? 'mx-4' : 'mx-7')} />
 
         {!isCollapsed ? (
-          <p className="mb-2 px-7 text-[9.5px] font-bold uppercase tracking-[0.18em] text-ink-3/70">
+          <p className="mb-2 px-7 text-[10.5px] font-bold uppercase tracking-[0.16em] text-ink-3/70">
             Explore
           </p>
         ) : null}

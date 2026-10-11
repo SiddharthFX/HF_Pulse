@@ -13,7 +13,7 @@ const variants = {
 } as const;
 
 const sizes = {
-  sm: 'h-7 rounded-[var(--radius-pill)] px-3 text-[12px]',
+  sm: 'h-10 rounded-[var(--radius-pill)] px-3.5 text-[13px] sm:h-7 sm:px-3 sm:text-[12px]',
   md: 'h-10 rounded-[var(--radius-pill)] px-4 text-[13.5px]',
   action: 'h-11 rounded-[var(--radius-inner)] px-4 text-[13.5px]',
 } as const;

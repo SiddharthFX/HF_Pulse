@@ -66,13 +66,13 @@ export function TopReposCard({
           Top repositories
         </h3>
         <div className="flex items-center gap-2">
-          <div className="flex h-7 items-center rounded-[var(--radius-inner)] bg-surface-2 p-0.5">
+          <div className="flex h-10 items-center rounded-[var(--radius-inner)] bg-surface-2 p-0.5 sm:h-7">
             <button
               type="button"
               onClick={() => setWindowRange('30d')}
               aria-pressed={windowRange === '30d'}
               className={cn(
-                'h-6 rounded-[9px] px-2.5 text-[11.5px] font-medium transition-colors duration-[160ms]',
+                'h-9 rounded-[9px] px-3 text-[12.5px] font-medium transition-colors duration-[160ms] sm:h-6 sm:px-2.5 sm:text-[11.5px]',
                 windowRange === '30d'
                   ? 'bg-surface text-ink shadow-[0_1px_2px_rgba(16,20,18,.06)]'
                   : 'text-ink-3 hover:text-ink-2',
@@ -85,7 +85,7 @@ export function TopReposCard({
               onClick={() => setWindowRange('all')}
               aria-pressed={windowRange === 'all'}
               className={cn(
-                'h-6 rounded-[9px] px-2.5 text-[11.5px] font-medium transition-colors duration-[160ms]',
+                'h-9 rounded-[9px] px-3 text-[12.5px] font-medium transition-colors duration-[160ms] sm:h-6 sm:px-2.5 sm:text-[11.5px]',
                 windowRange === 'all'
                   ? 'bg-surface text-ink shadow-[0_1px_2px_rgba(16,20,18,.06)]'
                   : 'text-ink-3 hover:text-ink-2',
@@ -97,7 +97,7 @@ export function TopReposCard({
           <button
             type="button"
             onClick={() => scrollToSection('models')}
-            className="inline-flex h-7 items-center gap-1 rounded-[var(--radius-pill)] bg-surface-2 px-3 text-[12px] font-medium text-ink-2 transition-colors hover:bg-surface-3"
+            className="inline-flex h-10 items-center gap-1 rounded-[var(--radius-pill)] bg-surface-2 px-3.5 text-[13px] font-medium text-ink-2 transition-colors hover:bg-surface-3 sm:h-7 sm:px-3 sm:text-[12px]"
           >
             View models ›
           </button>

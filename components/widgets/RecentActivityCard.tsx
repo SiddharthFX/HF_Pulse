@@ -64,7 +64,7 @@ export function RecentActivityCard({
         <h3 className="text-[16px] font-semibold tracking-[-0.01em] text-ink">
           Recent activity
         </h3>
-        <div className="flex h-7 items-center rounded-[var(--radius-inner)] bg-surface-2 p-0.5">
+        <div className="flex h-10 items-center rounded-[var(--radius-inner)] bg-surface-2 p-0.5 sm:h-7">
           {WINDOWS.map((w) => (
             <button
               key={w.value}
@@ -72,7 +72,7 @@ export function RecentActivityCard({
               onClick={() => setActiveWindow(w.value)}
               aria-pressed={activeWindow === w.value}
               className={cn(
-                'h-6 rounded-[9px] px-2 text-[11.5px] font-medium transition-colors duration-[160ms]',
+                'h-9 rounded-[9px] px-3 text-[12.5px] font-medium transition-colors duration-[160ms] sm:h-6 sm:px-2 sm:text-[11.5px]',
                 activeWindow === w.value
                   ? 'bg-surface text-ink shadow-[0_1px_2px_rgba(16,20,18,.06)]'
                   : 'text-ink-3 hover:text-ink-2',
@@ -90,7 +90,7 @@ export function RecentActivityCard({
           onClick={() => setSortKey('updated')}
           aria-pressed={sortKey === 'updated'}
           className={cn(
-            'inline-flex items-center gap-1.5 text-[11.5px] transition-colors',
+            'inline-flex min-h-10 items-center gap-1.5 text-[12.5px] transition-colors sm:min-h-0 sm:text-[11.5px]',
             sortKey === 'updated' ? 'font-medium text-ink' : 'text-ink-3 hover:text-ink-2',
           )}
         >
@@ -102,7 +102,7 @@ export function RecentActivityCard({
           onClick={() => setSortKey('downloads')}
           aria-pressed={sortKey === 'downloads'}
           className={cn(
-            'text-[11.5px] transition-colors',
+            'inline-flex min-h-10 items-center text-[12.5px] transition-colors sm:min-h-0 sm:text-[11.5px]',
             sortKey === 'downloads' ? 'font-medium text-ink' : 'text-ink-3 hover:text-ink-2',
           )}
         >

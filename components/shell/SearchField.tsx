@@ -227,7 +227,7 @@ export function SearchField({
               >
                 <span
                   className={cn(
-                    'shrink-0 rounded-[var(--radius-pill)] px-2 py-0.5 text-[10.5px] font-medium',
+                    'shrink-0 rounded-[var(--radius-pill)] px-2 py-0.5 text-[11px] font-medium',
                     repo.kind === 'model'
                       ? 'bg-jade-50 text-jade-700'
                       : 'bg-surface-2 text-ink-2',

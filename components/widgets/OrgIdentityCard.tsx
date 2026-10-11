@@ -72,7 +72,7 @@ export function OrgIdentityCard({
           href={ORG_URL}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex h-7 items-center gap-1 rounded-[var(--radius-pill)] bg-surface-2 px-3 text-[12px] font-medium text-ink-2 transition-colors hover:bg-surface-3"
+          className="inline-flex h-10 items-center gap-1 rounded-[var(--radius-pill)] bg-surface-2 px-3.5 text-[13px] font-medium text-ink-2 transition-colors hover:bg-surface-3 sm:h-7 sm:px-3 sm:text-[12px]"
         >
           + Follow
         </a>

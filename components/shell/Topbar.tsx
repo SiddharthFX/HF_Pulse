@@ -246,7 +246,7 @@ export function Topbar({
             <OrgAvatar />
             <span className="leading-tight">
               <span className="block text-[12.5px] font-semibold text-ink">{ORG_DISPLAY_NAME}</span>
-              <span className="block text-[10.5px] text-ink-3">huggingface.co/{ORG}</span>
+              <span className="block text-[11px] text-ink-3">huggingface.co/{ORG}</span>
             </span>
           </a>
 

@@ -152,7 +152,7 @@ function HostedAssetsKpiCard({ stats }: { stats: DerivedStats }) {
             <p className="num text-[34px] font-bold leading-none tracking-[-0.045em] text-ink">
               {total}
             </p>
-            <p className="pb-0.5 text-right text-[10.5px] leading-4 text-ink-3">
+            <p className="pb-0.5 text-right text-[11px] leading-4 text-ink-3">
               {models} {models === 1 ? 'model' : 'models'}
               <br />
               {datasets} {datasets === 1 ? 'dataset' : 'datasets'}
@@ -179,7 +179,7 @@ function HostedAssetsKpiCard({ stats }: { stats: DerivedStats }) {
             />
           </div>
 
-          <p className="mt-2.5 flex items-center justify-between gap-3 text-[10.5px] text-ink-3">
+          <p className="mt-2.5 flex items-center justify-between gap-3 text-[11px] text-ink-3">
             <span className="flex items-center gap-1.5">
               <span className="h-1.5 w-1.5 rounded-full bg-jade-500" />
               {updatedRecent > 0 ? `${updatedRecent} active in 30d` : 'All healthy'}

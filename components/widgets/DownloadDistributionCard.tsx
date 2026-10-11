@@ -66,7 +66,7 @@ export function DownloadDistributionCard({
               options={SCOPES}
               onChange={setScope}
             />
-            <div className="flex h-8 items-center gap-0.5 rounded-[var(--radius-inner)] border border-border p-0.5">
+            <div className="flex h-11 items-center gap-0.5 rounded-[var(--radius-inner)] border border-border p-0.5 sm:h-8">
               <ChartToggleButton
                 active={chartView === 'bar'}
                 label="Bar view"
@@ -96,7 +96,7 @@ export function DownloadDistributionCard({
         </p>
       ) : chartView === 'bar' ? (
         <>
-          <div className="mt-5 flex h-[26px] w-full items-stretch gap-0.5">
+          <div className="mt-5 flex h-9 w-full items-stretch gap-0.5 sm:h-[26px]">
             {slices.map((slice, i) => {
               const color = slice.isOther ? OTHER_COLOR : rampAt(i).solid;
               const isHovered = hovered === slice.key;
@@ -143,7 +143,7 @@ export function DownloadDistributionCard({
                     slice.repo && openRepo(slice.repo, event.currentTarget)
                   }
                     className={cn(
-                      'flex h-7 w-full items-center justify-between gap-3 rounded-[8px] px-1.5',
+                      'flex min-h-10 w-full items-center justify-between gap-3 rounded-[8px] px-2 sm:h-7 sm:min-h-0 sm:px-1.5',
                       'transition-colors duration-[140ms]',
                       isHovered && 'bg-surface-2',
                       !slice.repo && 'cursor-default',
@@ -240,7 +240,7 @@ export function DownloadDistributionCard({
                     slice.repo && openRepo(slice.repo, event.currentTarget)
                   }
                     className={cn(
-                      'flex h-7 w-full items-center justify-between gap-3 rounded-[8px] px-1.5',
+                      'flex min-h-10 w-full items-center justify-between gap-3 rounded-[8px] px-2 sm:h-7 sm:min-h-0 sm:px-1.5',
                       'transition-colors duration-[140ms]',
                       isHovered && 'bg-surface-2',
                       !slice.repo && 'cursor-default',
@@ -289,7 +289,7 @@ function ChartToggleButton({
       title={label}
       onClick={onClick}
       className={cn(
-        'inline-flex h-7 w-8 items-center justify-center rounded-[10px] transition-colors duration-[160ms]',
+        'inline-flex h-10 w-10 items-center justify-center rounded-[10px] transition-colors duration-[160ms] sm:h-7 sm:w-8',
         active
           ? 'border border-border-2 bg-surface text-ink shadow-[0_1px_2px_rgba(16,20,18,.06)]'
           : 'text-ink-3 hover:text-ink-2',

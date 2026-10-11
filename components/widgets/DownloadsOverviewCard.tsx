@@ -208,7 +208,7 @@ export function DownloadsOverviewCard({
           <div className="flex flex-wrap items-center gap-2">
             {/* Metric Mode Filter */}
             {tab === 'repos' ? (
-              <div className="flex h-8 max-w-full items-center overflow-x-auto rounded-[var(--radius-inner)] bg-surface-2 p-0.5 scrollbar-none">
+              <div className="flex h-11 max-w-full items-center overflow-x-auto rounded-[var(--radius-inner)] bg-surface-2 p-0.5 scrollbar-none sm:h-8">
                 {MODE_OPTIONS.map((option) => (
                   <button
                     key={option.value}
@@ -216,7 +216,7 @@ export function DownloadsOverviewCard({
                     onClick={() => setMode(option.value)}
                     aria-pressed={mode === option.value}
                     className={cn(
-                      'h-7 rounded-[11px] px-2.5 text-[12px] font-medium transition-all duration-[160ms]',
+                      'h-10 rounded-[11px] px-3.5 text-[13px] font-medium transition-all duration-[160ms] sm:h-7 sm:px-2.5 sm:text-[12px]',
                       mode === option.value
                         ? 'bg-surface text-ink shadow-[0_1px_2px_rgba(16,20,18,.08)] font-semibold'
                         : 'text-ink-3 hover:text-ink-2',
@@ -229,7 +229,7 @@ export function DownloadsOverviewCard({
             ) : null}
 
             {/* Chart Style Switchers */}
-            <div className="flex h-8 items-center gap-0.5 rounded-[var(--radius-inner)] border border-border p-0.5">
+            <div className="flex h-11 items-center gap-0.5 rounded-[var(--radius-inner)] border border-border p-0.5 sm:h-8">
               {tab === 'repos' ? (
                 <>
                   <TabButton
@@ -753,7 +753,7 @@ function TabButton({
       disabled={disabled}
       onClick={onClick}
       className={cn(
-        'inline-flex h-7 w-8 items-center justify-center rounded-[10px] transition-all duration-[160ms]',
+        'inline-flex h-10 w-10 items-center justify-center rounded-[10px] transition-all duration-[160ms] sm:h-7 sm:w-8',
         active
           ? 'border border-border-2 bg-surface text-ink shadow-[0_1px_2px_rgba(16,20,18,.08)] font-semibold'
           : 'text-ink-3 hover:text-ink-2',
@@ -816,7 +816,7 @@ function MountainTooltip({
       <div className="mb-2 flex items-center justify-between gap-2 border-b border-border/60 pb-2">
         <p className="truncate text-[12.5px] font-bold text-ink">{row.name}</p>
         {summitRatio !== null && (
-          <span className="shrink-0 rounded-md bg-jade-50 px-1.5 py-0.5 text-[10px] font-semibold text-jade-700">
+          <span className="shrink-0 rounded-md bg-jade-50 px-1.5 py-0.5 text-[10.5px] font-semibold text-jade-700">
             {summitRatio >= 99 ? '🏔️ Apex' : `${Math.round(summitRatio)}% Summit`}
           </span>
         )}
