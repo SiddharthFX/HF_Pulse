@@ -1,0 +1,282 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-page: #f4f7f4;
+  --color-surface: #ffffff;
+  --color-surface-2: #f8faf8;
+  --color-surface-3: #eef3ef;
+  --color-border: #e4eae5;
+  --color-border-2: #d6dfd8;
+
+  --color-ink: #132019;
+  --color-ink-2: #4e5d54;
+  --color-ink-3: #839188;
+
+  --color-jade-50: #edfbf5;
+  --color-jade-100: #d5f6e7;
+  --color-jade-200: #aceccb;
+  --color-jade-300: #72ddaa;
+  --color-jade-400: #32c98a;
+  --color-jade-500: #12ad76;
+  --color-jade-600: #0a8c60;
+  --color-jade-700: #08704d;
+  --color-jade-900: #0a3b2b;
+
+  --color-clay: #efa269;
+  --color-clay-50: #fff2e8;
+  --color-clay-700: #9a572b;
+  --color-sky-50: #eaf7fc;
+  --color-sky-400: #2a9fc8;
+  --color-sky-700: #147399;
+  --color-lime: #d8e85c;
+  --color-danger: #d8544f;
+  --color-action: #08704d;
+  --color-action-hover: #065f40;
+  --color-on-action: #ffffff;
+
+  --radius-card: 22px;
+  --radius-inner: 14px;
+  --radius-pill: 999px;
+
+  --font-sans:
+    var(--font-jakarta), ui-sans-serif, system-ui, -apple-system, 'Segoe UI',
+    sans-serif;
+
+  --ease-ui: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  --animate-shimmer: shimmer 1.4s ease-in-out infinite;
+  --animate-card-in: card-in 320ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  --animate-spin-slow: spin 900ms linear infinite;
+}
+
+.dark {
+  color-scheme: dark;
+  --color-page: #0b120f;
+  --color-surface: #111a16;
+  --color-surface-2: #17211c;
+  --color-surface-3: #1e2a23;
+  --color-border: #26362d;
+  --color-border-2: #35483c;
+
+  --color-ink: #edf7f1;
+  --color-ink-2: #b6c7bc;
+  --color-ink-3: #809587;
+
+  --color-jade-50: #10271e;
+  --color-jade-100: #173a2b;
+  --color-jade-200: #20523c;
+  --color-jade-300: #35c98c;
+  --color-jade-400: #38d99a;
+  --color-jade-500: #25c98a;
+  --color-jade-600: #1fb77d;
+  --color-jade-700: #7ae0b3;
+  --color-jade-900: #b9f2d7;
+
+  --color-clay-50: #2d2017;
+  --color-clay-700: #f3a776;
+  --color-sky-50: #102833;
+  --color-sky-400: #48c7ec;
+  --color-sky-700: #8adcf7;
+
+  --color-action: #1fb77d;
+  --color-action-hover: #38d99a;
+  --color-on-action: #061b12;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
+}
+
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.995);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes overlay-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes panel-in {
+  from {
+    opacity: 0;
+    transform: scale(0.97) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes sheet-in {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+    scrollbar-color: color-mix(in srgb, var(--color-ink-3) 32%, transparent) transparent;
+    scrollbar-width: thin;
+  }
+
+  *::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    border: 2px solid transparent;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--color-ink-3) 32%, transparent);
+    background-clip: padding-box;
+  }
+
+  html {
+    min-width: 320px;
+    background-color: var(--color-page);
+    color-scheme: light;
+    overflow-x: hidden;
+  }
+
+  body {
+    background:
+      radial-gradient(
+        circle at 88% -8%,
+        color-mix(in srgb, var(--color-jade-200) 22%, transparent) 0,
+        transparent 31rem
+      ),
+      radial-gradient(
+        circle at 12% 105%,
+        color-mix(in srgb, var(--color-jade-100) 20%, transparent) 0,
+        transparent 36rem
+      ),
+      var(--color-page);
+    background-attachment: fixed;
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+
+  button,
+  a {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  ::selection {
+    background: var(--color-jade-200);
+    color: var(--color-ink);
+  }
+
+  .num {
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.025em;
+  }
+
+  :focus-visible {
+    outline: none;
+  }
+
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  [tabindex]:focus-visible {
+    outline: 2px solid color-mix(in srgb, var(--color-jade-500) 58%, transparent);
+    outline-offset: 2px;
+    border-radius: 8px;
+  }
+
+  dialog::backdrop {
+    background: transparent;
+  }
+}
+
+@layer utilities {
+  .scrollbar-none {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+
+  .sr-only-table {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+
+  .hatch {
+    background-image: repeating-linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.28) 0 3px,
+      transparent 3px 7px
+    );
+  }
+
+  .hatch-soft {
+    background-image: repeating-linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.06) 0 3px,
+      transparent 3px 7px
+    );
+  }
+
+  .mask-fade-b {
+    mask-image: linear-gradient(to bottom, #000 78%, transparent 100%);
+  }
+
+  .mask-fade-l {
+    mask-image: linear-gradient(to right, transparent 0%, #000 42%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .reduce-motion-static {
+    transform: none !important;
+  }
+}

@@ -1,0 +1,494 @@
+'use client';
+
+import Image from 'next/image';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import {
+  AlertCircle,
+  Check,
+  Clock3,
+  Download,
+  Menu,
+  Moon,
+  RefreshCw,
+  Search,
+  Settings,
+  Sun,
+  X,
+} from 'lucide-react';
+import { cn } from '@/lib/cn';
+import {
+  LS_KEYS,
+  ORG,
+  ORG_DISPLAY_NAME,
+  ORG_URL,
+  REFRESH_COOLDOWN_MS,
+} from '@/lib/constants';
+import { IconButton } from '@/components/ui/IconButton';
+import { SearchField } from '@/components/shell/SearchField';
+import { usePersistentState } from '@/components/shell/ShellContext';
+import type { DashboardPayload } from '@/types/hf';
+
+type Toast = {
+  message: string;
+  tone: 'success' | 'warning' | 'error';
+};
+
+type Theme = 'light' | 'dark';
+
+function parseTheme(raw: string | null): Theme | null {
+  if (raw === 'dark' || raw === 'light') return raw;
+  if (!raw) return null;
+  try {
+    const parsed = JSON.parse(raw) as Theme;
+    return parsed === 'dark' || parsed === 'light' ? parsed : null;
+  } catch {
+    return null;
+  }
+}
+
+export function Topbar({
+  payload,
+  onOpenDrawer,
+}: {
+  payload: DashboardPayload;
+  onOpenDrawer: (trigger?: HTMLElement | null) => void;
+}) {
+  const router = useRouter();
+  const [refreshing, setRefreshing] = useState(false);
+  const [cooldownRemaining, setCooldownRemaining] = useState(0);
+  const [toast, setToast] = useState<Toast | null>(null);
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
+  const [prefsRevision, setPrefsRevision] = useState(0);
+  const lastRefresh = useRef(0);
+  const refreshBaseline = useRef<string | null>(null);
+  const mobileSearchTriggerRef = useRef<HTMLButtonElement>(null);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const cooldownActive = cooldownRemaining > 0;
+
+  useEffect(() => {
+    if (!toast) return;
+    const timer = window.setTimeout(() => setToast(null), 2800);
+    return () => window.clearTimeout(timer);
+  }, [toast]);
+
+  useEffect(() => {
+    if (!cooldownActive) return;
+    const timer = window.setInterval(() => {
+      setCooldownRemaining((remaining) => Math.max(0, remaining - 1));
+    }, 1000);
+    return () => window.clearInterval(timer);
+  }, [cooldownActive]);
+
+  useEffect(() => {
+    if (!refreshing || refreshBaseline.current === null) return;
+    if (payload.fetchedAt === refreshBaseline.current) return;
+    refreshBaseline.current = null;
+    setRefreshing(false);
+    setToast({ message: 'Updated just now', tone: 'success' });
+  }, [payload.fetchedAt, refreshing]);
+
+  useEffect(() => {
+    if (!refreshing) return;
+    const timer = window.setTimeout(() => {
+      refreshBaseline.current = null;
+      setRefreshing(false);
+      setToast({ message: 'Refresh is taking longer than expected', tone: 'warning' });
+    }, 12_000);
+    return () => window.clearTimeout(timer);
+  }, [refreshing]);
+
+  useEffect(() => {
+    const mobile = window.matchMedia('(max-width: 639px)');
+    const onChange = () => {
+      if (!mobile.matches) setMobileSearchOpen(false);
+    };
+    const onOpenSearch = () => {
+      if (mobile.matches) setMobileSearchOpen(true);
+    };
+    mobile.addEventListener('change', onChange);
+    window.addEventListener('pluto:open-search', onOpenSearch);
+    return () => {
+      mobile.removeEventListener('change', onChange);
+      window.removeEventListener('pluto:open-search', onOpenSearch);
+    };
+  }, []);
+
+  const closeMobileSearch = useCallback(() => {
+    setMobileSearchOpen(false);
+    requestAnimationFrame(() => mobileSearchTriggerRef.current?.focus());
+  }, []);
+
+  const handlePrefsChange = useCallback(() => {
+    setPrefsRevision((revision) => revision + 1);
+  }, []);
+
+  async function refresh() {
+    const now = Date.now();
+    const remaining = Math.max(0, REFRESH_COOLDOWN_MS - (now - lastRefresh.current));
+    if (refreshing || remaining > 0) {
+      setToast({ message: 'Refresh will be available in a moment', tone: 'warning' });
+      return;
+    }
+    lastRefresh.current = now;
+    refreshBaseline.current = payload.fetchedAt;
+    setCooldownRemaining(Math.ceil(REFRESH_COOLDOWN_MS / 1000));
+    setRefreshing(true);
+    try {
+      const response = await fetch('/api/revalidate', { method: 'POST' });
+      if (!response.ok) throw new Error(String(response.status));
+      router.refresh();
+    } catch {
+      lastRefresh.current = 0;
+      refreshBaseline.current = null;
+      setRefreshing(false);
+      setCooldownRemaining(0);
+      setToast({ message: 'Refresh failed — try again shortly', tone: 'error' });
+    }
+  }
+
+  function exportJson() {
+    const blob = new Blob([JSON.stringify(payload, null, 2)], {
+      type: 'application/json',
+    });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = `${ORG}-hub-stats.json`;
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 0);
+    setToast({ message: 'JSON export downloaded', tone: 'success' });
+  }
+
+  const refreshDisabled = refreshing || cooldownActive;
+  const refreshLabel = refreshing
+    ? 'Refreshing Hugging Face data'
+    : cooldownRemaining > 0
+      ? `Refresh available in ${cooldownRemaining} seconds`
+      : 'Refresh data from Hugging Face';
+
+  return (
+    <div
+      className="relative flex h-[72px] items-center gap-2 px-2 sm:gap-3 sm:px-4 md:px-7"
+      data-prefs-revision={prefsRevision}
+    >
+      <div
+        className={cn(
+          'w-full items-center gap-2 animate-[panel-in_160ms_ease-out_both] sm:hidden',
+          mobileSearchOpen ? 'flex' : 'hidden',
+        )}
+      >
+        <SearchField
+          className="min-w-0 flex-1"
+          autoFocus
+          enableShortcut={false}
+          returnFocusRef={mobileSearchTriggerRef}
+          onClose={closeMobileSearch}
+        />
+        <IconButton aria-label="Close search" onClick={closeMobileSearch} variant="ghost">
+          <X aria-hidden="true" className="h-[18px] w-[18px]" strokeWidth={1.8} />
+        </IconButton>
+      </div>
+
+      <div
+        className={cn(
+          'min-w-0 flex-1 items-center gap-2 sm:gap-3',
+          mobileSearchOpen ? 'hidden sm:flex' : 'flex',
+        )}
+      >
+        <IconButton
+          ref={menuButtonRef}
+          aria-label="Open navigation"
+          onClick={() => onOpenDrawer(menuButtonRef.current)}
+          className="md:hidden"
+        >
+          <Menu aria-hidden="true" className="h-[18px] w-[18px]" strokeWidth={1.7} />
+        </IconButton>
+
+        <SearchField className="hidden max-w-[460px] flex-1 sm:block" />
+
+        <div className="ml-auto flex min-w-0 shrink-0 items-center gap-1 sm:gap-2.5">
+          <IconButton
+            ref={mobileSearchTriggerRef}
+            aria-label="Search repositories"
+            onClick={() => setMobileSearchOpen(true)}
+            className="sm:hidden"
+          >
+            <Search aria-hidden="true" className="h-[18px] w-[18px]" strokeWidth={1.7} />
+          </IconButton>
+
+          <IconButton
+            aria-label={refreshLabel}
+            aria-busy={refreshing}
+            title={refreshLabel}
+            onClick={refresh}
+            disabled={refreshDisabled}
+          >
+            <RefreshCw
+              aria-hidden="true"
+              className={cn('h-[18px] w-[18px]', refreshing && 'animate-[spin_900ms_linear_infinite]')}
+              strokeWidth={1.7}
+            />
+          </IconButton>
+
+          <SettingsPopover onPrefsChange={handlePrefsChange} />
+          <ThemeToggle />
+
+          <a
+            href={ORG_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            title={`View ${ORG_DISPLAY_NAME} on Hugging Face`}
+            className="hidden h-10 items-center gap-2.5 rounded-[var(--radius-pill)] border border-border bg-surface/80 py-1 pl-1 pr-3.5 shadow-[0_1px_2px_rgba(16,23,19,.04)] backdrop-blur-sm transition-all duration-200 hover:border-jade-300 hover:bg-surface hover:shadow-sm lg:flex"
+          >
+            <OrgAvatar />
+            <span className="leading-tight">
+              <span className="block text-[12.5px] font-semibold text-ink">{ORG_DISPLAY_NAME}</span>
+              <span className="block text-[10.5px] text-ink-3">huggingface.co/{ORG}</span>
+            </span>
+          </a>
+
+          <a
+            href={ORG_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            title={`View ${ORG_DISPLAY_NAME} on Hugging Face`}
+            className="hidden transition-transform duration-150 hover:scale-105 sm:inline-flex lg:hidden"
+          >
+            <OrgAvatar />
+          </a>
+
+          <button
+            type="button"
+            onClick={exportJson}
+            aria-label="Export dashboard data as JSON"
+            className={cn(
+              'inline-flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-[var(--radius-pill)] bg-action px-0 sm:w-auto sm:px-4',
+              'text-[12.5px] font-semibold text-on-action shadow-[0_8px_18px_-12px_rgba(18,173,118,.9)]',
+              'transition-[background-color,transform,box-shadow] duration-200 hover:bg-action-hover active:scale-[.98]',
+            )}
+          >
+            <Download aria-hidden="true" className="h-4 w-4" strokeWidth={1.7} />
+            <span className="hidden sm:inline">Export JSON</span>
+          </button>
+        </div>
+      </div>
+
+      {toast ? (
+        <div
+          role={toast.tone === 'error' ? 'alert' : 'status'}
+          aria-live="polite"
+          className={cn(
+            'absolute right-3 top-[64px] z-40 flex max-w-[calc(100%-1.5rem)] items-center gap-2 rounded-[var(--radius-pill)] sm:right-7',
+            'border bg-surface/95 px-3.5 py-2 text-[12px] font-medium text-ink backdrop-blur-xl',
+            'shadow-[0_18px_40px_-18px_rgba(16,23,19,.4)] animate-[card-in_200ms_cubic-bezier(.2,.8,.2,1)_both]',
+            toast.tone === 'success' && 'border-jade-100',
+            toast.tone === 'warning' && 'border-clay/40',
+            toast.tone === 'error' && 'border-danger/35',
+          )}
+        >
+          {toast.tone === 'success' ? (
+            <Check aria-hidden="true" className="h-3.5 w-3.5 text-jade-600" strokeWidth={2} />
+          ) : toast.tone === 'warning' ? (
+            <Clock3 aria-hidden="true" className="h-3.5 w-3.5 text-clay-700" strokeWidth={2} />
+          ) : (
+            <AlertCircle aria-hidden="true" className="h-3.5 w-3.5 text-danger" strokeWidth={2} />
+          )}
+          {toast.message}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+function OrgAvatar() {
+  return (
+    <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-[10px] border border-border bg-white shadow-sm dark:bg-surface-2">
+      <Image src="/pluto-logo.webp" alt="" width={32} height={32} className="h-7 w-7 object-contain dark:hidden" priority />
+      <Image src="/pluto-logo-dark.webp" alt="" width={32} height={32} className="hidden h-7 w-7 object-contain dark:block" priority />
+    </span>
+  );
+}
+
+function ThemeToggle() {
+  const [theme, setTheme] = useState<Theme>('light');
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    let stored: Theme | null = null;
+    try {
+      stored = parseTheme(window.localStorage.getItem(LS_KEYS.theme));
+    } catch {
+      stored = null;
+    }
+    const initial =
+      stored ??
+      (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    setTheme(initial);
+    setReady(true);
+  }, []);
+
+  useEffect(() => {
+    const onStorage = (event: StorageEvent) => {
+      if (event.key !== LS_KEYS.theme) return;
+      const next = parseTheme(event.newValue);
+      if (next) setTheme(next);
+    };
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
+  }, []);
+
+  useEffect(() => {
+    if (!ready) return;
+    const root = document.documentElement;
+    root.classList.toggle('dark', theme === 'dark');
+    root.style.colorScheme = theme;
+    try {
+      window.localStorage.setItem(LS_KEYS.theme, JSON.stringify(theme));
+    } catch {}
+    document.querySelectorAll('meta[name="theme-color"]').forEach((meta) => {
+      meta.setAttribute('content', theme === 'dark' ? '#0b120f' : '#f4f7f4');
+    });
+    window.dispatchEvent(new CustomEvent('pluto:theme', { detail: { theme } }));
+  }, [ready, theme]);
+
+  const label = !ready
+    ? 'Toggle color theme'
+    : theme === 'dark'
+      ? 'Switch to light theme'
+      : 'Switch to dark theme';
+
+  return (
+    <IconButton
+      aria-label={label}
+      aria-pressed={theme === 'dark'}
+      title={label}
+      onClick={() => setTheme((current) => (current === 'light' ? 'dark' : 'light'))}
+      variant="surface"
+      className="overflow-hidden"
+    >
+      <span className="relative block h-[18px] w-[18px]">
+        <Sun
+          aria-hidden="true"
+          className="absolute inset-0 h-[18px] w-[18px] scale-100 opacity-100 transition-[transform,opacity] duration-200 dark:scale-75 dark:opacity-0"
+          strokeWidth={1.7}
+        />
+        <Moon
+          aria-hidden="true"
+          className="absolute inset-0 h-[18px] w-[18px] scale-75 opacity-0 transition-[transform,opacity] duration-200 dark:scale-100 dark:opacity-100"
+          strokeWidth={1.7}
+        />
+      </span>
+    </IconButton>
+  );
+}
+
+function SettingsPopover({ onPrefsChange }: { onPrefsChange: () => void }) {
+  const [open, setOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const [logScale, setLogScale] = usePersistentState<boolean>(LS_KEYS.logScale, false);
+  const [compact, setCompact] = usePersistentState<boolean>(LS_KEYS.compactNumbers, true);
+
+  useEffect(() => {
+    if (!open) return;
+    const onPointerDown = (event: PointerEvent) => {
+      if (!rootRef.current?.contains(event.target as Node)) setOpen(false);
+    };
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return;
+      setOpen(false);
+      requestAnimationFrame(() => triggerRef.current?.focus());
+    };
+    document.addEventListener('pointerdown', onPointerDown);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('pointerdown', onPointerDown);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [open]);
+
+  useEffect(() => {
+    window.dispatchEvent(
+      new CustomEvent('pluto:prefs', { detail: { logScale, compact } }),
+    );
+    onPrefsChange();
+  }, [compact, logScale, onPrefsChange]);
+
+  return (
+    <div ref={rootRef} className="relative">
+      <IconButton
+        ref={triggerRef}
+        aria-label="Display settings"
+        aria-haspopup="dialog"
+        aria-expanded={open}
+        aria-controls={open ? 'display-settings' : undefined}
+        onClick={() => setOpen((current) => !current)}
+      >
+        <Settings aria-hidden="true" className="h-[18px] w-[18px]" strokeWidth={1.7} />
+      </IconButton>
+
+      {open ? (
+        <div
+          id="display-settings"
+          role="dialog"
+          aria-label="Display settings"
+          className={cn(
+            'absolute left-1/2 top-[50px] z-40 w-[min(236px,calc(100vw-1rem))] -translate-x-1/2 rounded-[16px]',
+            'border border-border bg-surface/95 p-2 backdrop-blur-xl sm:right-0 sm:left-auto sm:translate-x-0',
+            'shadow-[0_20px_50px_-18px_rgba(16,23,19,.35)]',
+          )}
+        >
+          <ToggleRow
+            label="Log scale charts"
+            checked={logScale}
+            onChange={() => setLogScale(!logScale)}
+          />
+          <ToggleRow
+            label="Compact numbers"
+            checked={compact}
+            onChange={() => setCompact(!compact)}
+          />
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+function ToggleRow({
+  label,
+  checked,
+  onChange,
+}: {
+  label: string;
+  checked: boolean;
+  onChange: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={checked}
+      onClick={onChange}
+      className="flex w-full items-center justify-between gap-3 rounded-[11px] px-2.5 py-2.5 text-left text-[12.5px] font-medium text-ink-2 transition-colors hover:bg-surface-2"
+    >
+      {label}
+      <span
+        aria-hidden="true"
+        className={cn(
+          'relative h-5 w-9 shrink-0 rounded-full transition-colors duration-[160ms]',
+          checked ? 'bg-action' : 'bg-border-2',
+        )}
+      >
+        <span
+          className={cn(
+            'absolute top-0.5 h-4 w-4 rounded-full bg-white transition-transform duration-[160ms]',
+            checked ? 'translate-x-[18px]' : 'translate-x-0.5',
+          )}
+        />
+      </span>
+    </button>
+  );
+}
