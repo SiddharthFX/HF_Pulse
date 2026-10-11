@@ -44,7 +44,7 @@ export function CardHeader({
   className?: string;
 }) {
   return (
-    <div className={cn('flex items-start justify-between gap-3', className)}>
+    <div className={cn('flex flex-wrap items-start justify-between gap-3', className)}>
       <div className="min-w-0">
         <h3 className="truncate text-[15px] font-semibold tracking-[-0.015em] text-ink">
           {title}

@@ -123,24 +123,24 @@ function ShellBody({ payload }: { payload: DashboardPayload }) {
         </header>
 
         <main className="min-w-0 flex-1">
-          <div className="mx-auto w-full max-w-[1600px] px-4 pb-14 pt-6 md:px-7 xl:px-8">
+          <div className="mx-auto w-full max-w-[1600px] px-3.5 pb-14 pt-5 sm:px-5 md:px-7 xl:px-8">
             <FixtureBanner active={payload.isFixture} />
             <StaleRibbon fetchedAt={payload.fetchedAt} />
 
-            <section className="relative mb-6 overflow-hidden rounded-[26px] border border-jade-100 bg-[radial-gradient(ellipse_at_top_right,var(--color-jade-50)_0%,var(--color-surface)_72%)] shadow-[0_20px_60px_-42px_rgba(10,92,65,.65)] dark:bg-[radial-gradient(ellipse_at_top_right,var(--color-jade-100)_0%,var(--color-surface)_65%)] sm:rounded-[30px]">
+            <section className="relative mb-6 overflow-hidden rounded-[22px] border border-jade-100 bg-[radial-gradient(ellipse_at_top_right,var(--color-jade-50)_0%,var(--color-surface)_72%)] shadow-[0_20px_60px_-42px_rgba(10,92,65,.65)] dark:bg-[radial-gradient(ellipse_at_top_right,var(--color-jade-100)_0%,var(--color-surface)_65%)] sm:rounded-[30px]">
               <div className="pointer-events-none absolute -right-24 -top-32 h-80 w-80 rounded-full bg-jade-200/40 blur-3xl" />
               <div className="pointer-events-none absolute -bottom-36 left-[28%] h-72 w-72 rounded-full bg-jade-100/50 blur-3xl" />
               <div className="pointer-events-none absolute inset-y-0 right-[32%] hidden w-px bg-gradient-to-b from-transparent via-jade-200/60 to-transparent lg:block" />
 
-              <div className="relative grid gap-7 px-5 py-6 sm:px-7 sm:py-7 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:px-8 lg:py-8">
-                <div className="flex min-w-0 items-start gap-4 sm:gap-5">
-                  <span className="inline-flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-[20px] border border-jade-100 bg-white shadow-[0_16px_34px_-20px_rgba(10,92,65,.65)] dark:bg-surface-2 sm:h-[72px] sm:w-[72px] sm:rounded-[22px]">
+              <div className="relative grid gap-6 px-4 py-5 sm:px-7 sm:py-7 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:px-8 lg:py-8">
+                <div className="flex min-w-0 items-start gap-3.5 sm:gap-5">
+                  <span className="inline-flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-[18px] border border-jade-100 bg-white shadow-[0_16px_34px_-20px_rgba(10,92,65,.65)] dark:bg-surface-2 sm:h-[72px] sm:w-[72px] sm:rounded-[22px]">
                     <Image
                       src="/pluto-logo.webp"
                       alt={`${ORG_DISPLAY_NAME} logo`}
                       width={72}
                       height={72}
-                      className="h-[58px] w-[58px] object-contain dark:hidden sm:h-[64px] sm:w-[64px]"
+                      className="h-[48px] w-[48px] object-contain dark:hidden sm:h-[64px] sm:w-[64px]"
                       priority
                     />
                     <Image
@@ -148,29 +148,29 @@ function ShellBody({ payload }: { payload: DashboardPayload }) {
                       alt=""
                       width={72}
                       height={72}
-                      className="hidden h-[58px] w-[58px] object-contain dark:block sm:h-[64px] sm:w-[64px]"
+                      className="hidden h-[48px] w-[48px] object-contain dark:block sm:h-[64px] sm:w-[64px]"
                       priority
                     />
                   </span>
                   <div className="min-w-0">
-                    <div className="mb-2.5 flex flex-wrap items-center gap-2 text-[9.5px] font-bold uppercase tracking-[0.15em] text-jade-700">
-                      <span className="inline-flex items-center gap-1.5 rounded-full border border-jade-100 bg-jade-50 px-2.5 py-1">
+                    <div className="mb-2 flex flex-wrap items-center gap-2 text-[9px] font-bold uppercase tracking-[0.14em] text-jade-700 sm:text-[9.5px]">
+                      <span className="inline-flex items-center gap-1.5 rounded-full border border-jade-100 bg-jade-50 px-2 py-0.5 sm:px-2.5 sm:py-1">
                         <span className="h-1.5 w-1.5 rounded-full bg-jade-500" />
                         Public Hub snapshot
                       </span>
                       <span className="text-ink-3">Refreshes every 12 hours</span>
                     </div>
-                    <h1 className="text-[31px] font-bold leading-[1.04] tracking-[-0.045em] text-ink sm:text-[38px]">
+                    <h1 className="text-[25px] font-bold leading-[1.08] tracking-[-0.04em] text-ink sm:text-[38px]">
                       {ORG_DISPLAY_NAME}
                     </h1>
-                    <p className="mt-2.5 max-w-2xl text-[13px] leading-6 text-ink-2 sm:text-[13.5px]">
+                    <p className="mt-2 max-w-2xl text-[12.5px] leading-5 text-ink-2 sm:text-[13.5px] sm:leading-6">
                       A focused view of every public model, dataset, and download across your research portfolio.
                     </p>
                   </div>
                 </div>
 
-                <div className="flex flex-col gap-4 border-t border-jade-100 pt-5 sm:flex-row sm:items-center lg:border-l lg:border-t-0 lg:pl-8 lg:pt-0">
-                  <div className="grid min-w-0 flex-1 grid-cols-3 divide-x divide-jade-100 rounded-[18px] border border-jade-100 bg-surface-2 px-2 py-3 sm:min-w-[300px]">
+                <div className="flex flex-col gap-3.5 border-t border-jade-100 pt-4 sm:flex-row sm:items-center sm:gap-4 sm:pt-5 lg:border-l lg:border-t-0 lg:pl-8 lg:pt-0">
+                  <div className="grid min-w-0 flex-1 grid-cols-3 divide-x divide-jade-100 rounded-[18px] border border-jade-100 bg-surface-2 px-1.5 py-2.5 sm:min-w-[300px] sm:px-2 sm:py-3">
                     <HeroMetric
                       value={stats.repoCount.total}
                       label={stats.repoCount.total === 1 ? 'Repository' : 'Repositories'}
@@ -182,7 +182,7 @@ function ShellBody({ payload }: { payload: DashboardPayload }) {
                     href={ORG_URL}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex h-11 shrink-0 items-center justify-center gap-2 rounded-[13px] bg-action px-4 text-[12.5px] font-bold text-on-action shadow-[0_12px_24px_-14px_rgba(18,173,118,.95)] transition-[background-color,transform] hover:bg-action-hover active:scale-[.98]"
+                    className="inline-flex h-11 w-full shrink-0 items-center justify-center gap-2 rounded-[13px] bg-action px-4 text-[12.5px] font-bold text-on-action shadow-[0_12px_24px_-14px_rgba(18,173,118,.95)] transition-[background-color,transform] hover:bg-action-hover active:scale-[.98] sm:w-auto"
                   >
                     Open on Hugging Face
                     <ExternalLink aria-hidden="true" className="h-3.5 w-3.5" strokeWidth={2} />
@@ -293,11 +293,11 @@ function ShellBody({ payload }: { payload: DashboardPayload }) {
 
 function HeroMetric({ value, label }: { value: number; label: string }) {
   return (
-    <div className="min-w-0 px-3 text-center sm:px-4">
-      <p className="num text-[18px] font-bold leading-none tracking-[-0.035em] text-ink sm:text-[20px]">
+    <div className="min-w-0 px-1 text-center sm:px-4">
+      <p className="num text-[16px] font-bold leading-none tracking-[-0.035em] text-ink sm:text-[20px]">
         {value}
       </p>
-      <p className="mt-1.5 truncate text-[9.5px] font-semibold uppercase tracking-[0.09em] text-ink-3">
+      <p className="mt-1 truncate text-[9px] font-semibold uppercase tracking-[0.08em] text-ink-3 sm:text-[9.5px]">
         {label}
       </p>
     </div>
@@ -400,7 +400,7 @@ function MobileDrawer({
         aria-label="Close navigation"
         size={44}
         onClick={onClose}
-        className="absolute left-[276px] top-4 border-border bg-surface shadow-xl"
+        className="absolute right-3.5 top-3.5 sm:left-[276px] sm:right-auto border-border bg-surface shadow-xl"
       >
         <X aria-hidden="true" className="h-[18px] w-[18px]" strokeWidth={1.8} />
       </IconButton>

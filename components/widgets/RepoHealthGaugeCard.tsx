@@ -110,7 +110,7 @@ export function RepoHealthGaugeCard({
   const data = [{ name: 'models', value: pct, fill: hatchUrl(HATCH_IDS.jade500) }];
 
   return (
-    <Card index={index} className="flex flex-col p-6">
+    <Card index={index} className="flex flex-col p-4 sm:p-6">
       <CardHeader
         title="Portfolio balance"
         subtitle={windowRange === 'all' ? 'Lifetime distribution' : 'Selected window'}

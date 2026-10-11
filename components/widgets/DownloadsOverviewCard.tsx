@@ -170,12 +170,12 @@ export function DownloadsOverviewCard({
         : Math.max(...rows.map((r) => r.lifetime ?? 0), 1);
 
   return (
-    <Card index={index} className="flex flex-col p-6">
+    <Card index={index} className="flex flex-col p-4 sm:p-6">
       {/* Header Section */}
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <div className="flex items-baseline gap-3">
-            <p className="num text-[clamp(36px,3vw,44px)] font-bold leading-none tracking-[-0.03em] text-ink transition-all duration-200">
+            <p className="num text-[clamp(32px,3vw,44px)] font-bold leading-none tracking-[-0.03em] text-ink transition-all duration-200">
               {formatCompact(displayTotal)}
               {isPartial && (mode === 'lifetime' || mode === 'both') ? (
                 <span
@@ -204,11 +204,11 @@ export function DownloadsOverviewCard({
           </p>
         </div>
 
-        <div className="flex flex-col items-end gap-2.5">
+        <div className="flex flex-col items-start sm:items-end w-full sm:w-auto gap-2.5">
           <div className="flex flex-wrap items-center gap-2">
             {/* Metric Mode Filter */}
             {tab === 'repos' ? (
-              <div className="flex h-8 items-center rounded-[var(--radius-inner)] bg-surface-2 p-0.5">
+              <div className="flex h-8 max-w-full items-center overflow-x-auto rounded-[var(--radius-inner)] bg-surface-2 p-0.5 scrollbar-none">
                 {MODE_OPTIONS.map((option) => (
                   <button
                     key={option.value}
@@ -277,7 +277,7 @@ export function DownloadsOverviewCard({
           </div>
 
           {/* Color Legend */}
-          <div className="flex items-center gap-3.5">
+          <div className="flex flex-wrap items-center gap-2.5 sm:gap-3.5">
             {mode === 'lifetime' && (
               <LegendDot color="#0FA871" label="Lifetime Peak" />
             )}
@@ -311,7 +311,7 @@ export function DownloadsOverviewCard({
       </p>
 
       {/* Main Chart Canvas */}
-      <div className="mt-4 h-[240px] w-full max-[1279px]:h-[210px] max-[767px]:h-[190px]">
+      <div className="mt-4 h-[210px] sm:h-[240px] w-full">
         {!mounted ? (
           <div className="h-full w-full rounded-[var(--radius-inner)] bg-surface-2 animate-pulse" />
         ) : tab === 'repos' ? (

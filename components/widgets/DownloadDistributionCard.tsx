@@ -54,7 +54,7 @@ export function DownloadDistributionCard({
   const total = slices.reduce((acc, s) => acc + s.value, 0);
 
   return (
-    <Card index={index} className="flex flex-col p-6">
+    <Card index={index} className="flex flex-col p-4 sm:p-6">
       <CardHeader
         title="Download distribution"
         subtitle="Share of lifetime downloads"

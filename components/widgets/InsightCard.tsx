@@ -21,7 +21,7 @@ export function InsightCard({
   const { leadingRepo, leadingRepoShare, updatedLast30d, repoCount } = stats;
 
   return (
-    <Card index={index} className="relative overflow-hidden p-6">
+    <Card index={index} className="relative overflow-hidden p-4 sm:p-6">
       <div className="relative z-10 max-w-[62%] max-[900px]:max-w-full">
         <h3 className="text-[17px] font-semibold leading-snug tracking-[-0.01em] text-ink">
           Where {ORG_DISPLAY_NAME}&rsquo;s downloads come from
@@ -87,7 +87,7 @@ function PixelStaircase() {
   return (
     <div
       aria-hidden="true"
-      className="mask-fade-l pointer-events-none absolute bottom-5 right-5 select-none max-[900px]:opacity-40"
+      className="mask-fade-l pointer-events-none absolute bottom-5 right-5 select-none max-[900px]:opacity-40 max-[500px]:hidden"
       style={{ width: CELL * 7, height: CELL * 3 }}
     >
       {squares.map((sq) => (

@@ -59,7 +59,7 @@ export function RecentActivityCard({
   }, [repos, activeWindow, sortKey]);
 
   return (
-    <Card index={index} className="flex flex-col p-6">
+    <Card index={index} className="flex flex-col p-4 sm:p-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h3 className="text-[16px] font-semibold tracking-[-0.01em] text-ink">
           Recent activity

@@ -130,7 +130,7 @@ export function RepoSection({
   );
 
   return (
-    <Card as="section" index={index} id={id} className="scroll-mt-[88px] p-5 sm:p-6" aria-labelledby={`${id}-title`}>
+    <Card as="section" index={index} id={id} className="scroll-mt-[88px] p-4 sm:p-6" aria-labelledby={`${id}-title`}>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex min-w-0 items-center gap-2.5">
           <h2
