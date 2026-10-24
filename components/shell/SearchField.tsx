@@ -163,11 +163,11 @@ export function SearchField({
           onFocus={() => setOpen(true)}
           onKeyDown={onKeyDown}
           className={cn(
-            'h-[44px] w-full rounded-[var(--radius-pill)] bg-surface/90 pl-[44px] pr-14',
+            'h-[44px] w-full rounded-[var(--radius-pill)] bg-surface-2 pl-[44px] pr-14',
             'text-[13.5px] text-ink placeholder:text-ink-3',
-            'border border-border shadow-[0_1px_2px_rgba(16,23,19,.04)]',
+            'border border-transparent',
             'transition-[background-color,border-color,box-shadow] duration-200',
-            'hover:border-border-2 focus:border-jade-300 focus:bg-surface focus:outline-none',
+            'hover:border-border focus:border-jade-300 focus:bg-surface focus:outline-none',
             'focus:ring-4 focus:ring-jade-500/10',
           )}
         />
@@ -186,7 +186,7 @@ export function SearchField({
         ) : (
           <kbd
             aria-hidden="true"
-            className="pointer-events-none absolute right-3 top-1/2 hidden -translate-y-1/2 items-center gap-0.5 rounded-md border border-border bg-surface-2 px-1.5 py-0.5 text-[9.5px] font-semibold text-ink-3 sm:flex"
+            className="pointer-events-none absolute right-3 top-1/2 hidden -translate-y-1/2 items-center gap-0.5 rounded-full border border-border bg-surface px-2 py-0.5 text-[9.5px] font-semibold text-ink-3 sm:flex"
           >
             <span>⌘</span>K
           </kbd>
@@ -199,9 +199,9 @@ export function SearchField({
           role="listbox"
           aria-label="Search results"
           className={cn(
-            'absolute left-0 right-0 top-[50px] z-40 overflow-hidden rounded-[16px]',
+            'absolute left-0 right-0 top-[52px] z-40 min-w-[280px] overflow-hidden rounded-[20px]',
             'border border-border bg-surface/95 p-1.5 backdrop-blur-xl',
-            'shadow-[0_20px_50px_-18px_rgba(16,23,19,.35)]',
+            'shadow-[0_24px_54px_-20px_rgba(26,31,27,.38)] animate-[panel-in_160ms_cubic-bezier(.2,.8,.2,1)_both]',
           )}
         >
           {results.length === 0 ? (
@@ -221,7 +221,7 @@ export function SearchField({
                 onMouseDown={(event) => event.preventDefault()}
                 onClick={() => selectRepo(repo)}
                 className={cn(
-                  'flex w-full items-center gap-3 px-3 py-2 text-left transition-colors duration-[120ms]',
+                  'flex w-full items-center gap-3 rounded-[14px] px-3 py-2.5 text-left transition-colors duration-[120ms]',
                   i === activeIndex && 'bg-surface-2',
                 )}
               >

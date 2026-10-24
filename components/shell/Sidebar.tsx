@@ -5,21 +5,14 @@ import {
   Activity,
   BookOpen,
   Box,
-  ChevronsLeft,
-  Compass,
   Database,
   ExternalLink,
   Grid2X2,
   LayoutList,
-  X,
 } from 'lucide-react';
 import { cn } from '@/lib/cn';
-import { LS_KEYS, ORG_DISPLAY_NAME, ORG_URL } from '@/lib/constants';
-import {
-  scrollToSection,
-  useShell,
-  usePersistentState,
-} from '@/components/shell/ShellContext';
+import { ORG_DISPLAY_NAME, ORG_URL } from '@/lib/constants';
+import { scrollToSection, useShell } from '@/components/shell/ShellContext';
 
 interface NavItem {
   id: string;
@@ -29,33 +22,40 @@ interface NavItem {
   count?: number;
 }
 
-export function Sidebar({
-  datasetCount,
-  collapsed,
-  onCollapsedChange,
-  variant = 'fixed',
-  onNavigate,
-}: {
-  datasetCount: number;
-  collapsed: boolean;
-  onCollapsedChange: (next: boolean) => void;
-  variant?: 'fixed' | 'drawer';
-  onNavigate?: () => void;
-}) {
-  const { activeSection, setActiveSection, groupModelsByTask, setGroupModelsByTask } = useShell();
-  const [promoDismissed, setPromoDismissed] = usePersistentState<boolean>(
-    LS_KEYS.promoDismissed,
-    false,
-  );
-
-  const isCollapsed = variant === 'drawer' ? false : collapsed;
-
-  const primaryNav: readonly NavItem[] = [
+export function buildPrimaryNav(datasetCount: number): readonly NavItem[] {
+  return [
     { id: 'overview', label: 'Overview', icon: Grid2X2, target: 'overview' },
     { id: 'models', label: 'Models', icon: Box, target: 'models' },
     { id: 'datasets', label: 'Datasets', icon: Database, target: 'datasets', count: datasetCount },
     { id: 'activity', label: 'Activity', icon: Activity, target: 'activity' },
   ];
+}
+
+export function isNavActive(activeSection: string, id: string): boolean {
+  return activeSection === id || (id === 'datasets' && activeSection.startsWith('datasets'));
+}
+
+const EXTERNAL_LINKS = [
+  { href: 'https://huggingface.co/docs/hub/model-cards', label: 'Model cards', icon: BookOpen },
+  { href: 'https://huggingface.co/docs/hub/index', label: 'Hub docs', icon: ExternalLink },
+] as const;
+
+/**
+ * Two presentations of the same navigation:
+ *  - `rail`   — the floating icon-only pill rail from the reference (md and up)
+ *  - `drawer` — the full labelled panel used by the mobile drawer
+ */
+export function Sidebar({
+  datasetCount,
+  variant = 'rail',
+  onNavigate,
+}: {
+  datasetCount: number;
+  variant?: 'rail' | 'drawer';
+  onNavigate?: () => void;
+}) {
+  const { activeSection, setActiveSection, groupModelsByTask, setGroupModelsByTask } = useShell();
+  const primaryNav = buildPrimaryNav(datasetCount);
 
   function go(item: NavItem) {
     setActiveSection(item.id);
@@ -63,265 +63,297 @@ export function Sidebar({
     onNavigate?.();
   }
 
+  function toggleGrouping() {
+    setGroupModelsByTask(!groupModelsByTask);
+    scrollToSection('models');
+    onNavigate?.();
+  }
+
+  if (variant === 'drawer') {
+    return (
+      <DrawerPanel
+        primaryNav={primaryNav}
+        activeSection={activeSection}
+        groupModelsByTask={groupModelsByTask}
+        onGo={go}
+        onToggleGrouping={toggleGrouping}
+        onNavigate={onNavigate}
+      />
+    );
+  }
+
   return (
-    <aside
-      aria-label="Dashboard sections"
-      className={cn(
-        'flex h-full shrink-0 flex-col overflow-hidden border-r border-border/80 bg-surface',
-        'shadow-[16px_0_45px_-38px_rgba(19,32,25,.65)]',
-        'transition-[width] duration-300 ease-[cubic-bezier(.2,.8,.2,1)]',
-        isCollapsed ? 'w-[80px]' : 'w-[260px]',
-      )}
-    >
-      <div className={cn('flex h-[76px] shrink-0 items-center', isCollapsed ? 'justify-center px-3' : 'px-6')}>
-        {isCollapsed ? (
-          <span className="inline-flex h-10 w-10 items-center justify-center overflow-hidden rounded-[13px] border border-border bg-white shadow-[0_6px_18px_-12px_rgba(19,32,25,.55)] dark:bg-surface-2">
-            <Image src="/pluto-logo.webp" alt="" width={40} height={40} className="h-9 w-9 object-contain dark:hidden" priority />
-            <Image src="/pluto-logo-dark.webp" alt="" width={40} height={40} className="hidden h-9 w-9 object-contain dark:block" priority />
-          </span>
-        ) : (
-          <span className="flex items-center gap-3">
-            <span className="inline-flex h-10 w-10 items-center justify-center overflow-hidden rounded-[13px] border border-border bg-white shadow-[0_8px_22px_-16px_rgba(19,32,25,.7)] dark:bg-surface-2">
-              <Image src="/pluto-logo.webp" alt="" width={40} height={40} className="h-9 w-9 object-contain dark:hidden" priority />
-              <Image src="/pluto-logo-dark.webp" alt="" width={40} height={40} className="hidden h-9 w-9 object-contain dark:block" priority />
-            </span>
-            <span>
-              <span className="block text-[15px] font-bold leading-none tracking-[-0.01em] text-ink">
-                {ORG_DISPLAY_NAME}
-              </span>
-              <span className="mt-1.5 block text-[10.5px] font-semibold uppercase tracking-[0.14em] text-ink-3">
-                Hub Analytics
-              </span>
-            </span>
-          </span>
-        )}
-      </div>
-
-      <nav className="flex-1 overflow-y-auto overflow-x-hidden scrollbar-none">
-        {!isCollapsed ? (
-          <p className="mb-2 px-7 text-[10.5px] font-bold uppercase tracking-[0.16em] text-ink-3/70">
-            Workspace
-          </p>
-        ) : null}
-        <ul className={cn('space-y-1', isCollapsed ? 'px-3' : 'px-4')}>
-          {primaryNav.map((item) => (
-            <NavRow
+    <aside aria-label="Dashboard sections" className="flex h-full flex-col items-center gap-3">
+      <RailGroup>
+        {primaryNav.map((item) => {
+          const active = isNavActive(activeSection, item.id);
+          const Icon = item.icon;
+          return (
+            <RailButton
               key={item.id}
-              item={item}
-              active={activeSection === item.id || (item.id === 'datasets' && activeSection.startsWith('datasets'))}
-              collapsed={isCollapsed}
+              label={item.count !== undefined ? `${item.label} (${item.count})` : item.label}
+              tooltip={item.label}
+              active={active}
+              aria-current={active ? 'true' : undefined}
               onClick={() => go(item)}
-            />
-          ))}
-        </ul>
-
-        <div className={cn('my-5 h-px bg-border', isCollapsed ? 'mx-4' : 'mx-7')} />
-
-        {!isCollapsed ? (
-          <p className="mb-2 px-7 text-[10.5px] font-bold uppercase tracking-[0.16em] text-ink-3/70">
-            Explore
-          </p>
-        ) : null}
-        <ul className={cn('space-y-1', isCollapsed ? 'px-3' : 'px-4')}>
-          <li>
-            <button
-              type="button"
-              onClick={() => {
-                setGroupModelsByTask(!groupModelsByTask);
-                scrollToSection('models');
-                onNavigate?.();
-              }}
-              aria-pressed={groupModelsByTask}
-              title={isCollapsed ? 'Group models by task' : undefined}
-              className={cn(
-                'group relative flex h-11 w-full items-center rounded-[13px] text-[13.5px] font-medium',
-                'transition-colors duration-200',
-                isCollapsed ? 'justify-center px-0' : 'gap-3 px-3.5',
-                groupModelsByTask
-                  ? 'bg-jade-50 text-jade-900'
-                  : 'text-ink-2 hover:bg-jade-50/60 hover:text-ink',
-              )}
             >
-              <LayoutList
-                aria-hidden="true"
-                className={cn(
-                  'h-[17px] w-[17px] shrink-0',
-                  groupModelsByTask ? 'text-jade-600' : 'text-ink-3',
-                )}
-                strokeWidth={1.7}
-              />
-              {!isCollapsed && <span className="truncate">Group by task</span>}
-            </button>
-          </li>
-          <ExternalRow
-            href="https://huggingface.co/docs/hub/model-cards"
-            label="Model cards"
-            icon={BookOpen}
-            collapsed={isCollapsed}
-            onNavigate={onNavigate}
-          />
-          <ExternalRow
-            href="https://huggingface.co/docs/hub/index"
-            label="Hub docs"
-            icon={ExternalLink}
-            collapsed={isCollapsed}
-            onNavigate={onNavigate}
-          />
-        </ul>
-      </nav>
+              <Icon aria-hidden="true" className="h-[18px] w-[18px]" strokeWidth={1.8} />
+              {item.count !== undefined && item.count > 0 ? (
+                <span
+                  aria-hidden="true"
+                  className={cn(
+                    'num absolute -right-0.5 -top-0.5 inline-flex h-[18px] min-w-[18px] items-center justify-center rounded-full px-1',
+                    'border-2 border-surface bg-clay text-[9.5px] font-bold leading-none text-white',
+                  )}
+                >
+                  {item.count}
+                </span>
+              ) : null}
+            </RailButton>
+          );
+        })}
+      </RailGroup>
 
-      {!isCollapsed && !promoDismissed ? (
-        <div className="relative mx-4 mb-4 overflow-hidden rounded-[18px] border border-jade-100 bg-[linear-gradient(145deg,var(--color-surface)_0%,var(--color-jade-50)_100%)] p-5 shadow-[0_14px_32px_-26px_rgba(10,139,96,.65)]">
-          <div className="pointer-events-none absolute -right-7 -top-8 h-24 w-24 rounded-full bg-jade-200/35 blur-2xl" />
-          <button
-            type="button"
-            aria-label="Dismiss"
-            onClick={() => setPromoDismissed(true)}
-            className="absolute right-3 top-3 rounded-full p-1 text-ink-3 transition-colors hover:bg-surface-2 hover:text-ink"
-          >
-            <X aria-hidden="true" className="h-3.5 w-3.5" strokeWidth={2} />
-          </button>
-          <span className="mb-4 inline-flex h-9 w-9 items-center justify-center rounded-[12px] border border-jade-100 bg-surface text-jade-600 shadow-sm">
-            <Compass aria-hidden="true" className="h-[17px] w-[17px]" strokeWidth={1.7} />
-          </span>
-          <p className="text-[15px] font-semibold tracking-[-0.01em] text-ink">
-            Public research hub
-          </p>
-          <p className="mt-1.5 text-[12px] leading-[1.5] text-ink-2">
-            Explore every {ORG_DISPLAY_NAME} model and dataset, refreshed every 12 hours.
-          </p>
-          <a
-            href={ORG_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={onNavigate}
-            className="mt-4 inline-flex h-9 w-full items-center justify-center gap-2 rounded-[11px] bg-action text-[12.5px] font-bold text-on-action shadow-[0_8px_18px_-12px_rgba(18,173,118,.85)] transition-[background-color,transform] hover:bg-action-hover active:scale-[.98]"
-          >
-            Open organization
-            <ExternalLink aria-hidden="true" className="h-3.5 w-3.5" strokeWidth={2} />
-          </a>
-        </div>
-      ) : null}
-
-      {variant === 'fixed' ? (
-        <button
-          type="button"
-          onClick={() => onCollapsedChange(!collapsed)}
-          aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-          className={cn(
-            'flex h-14 w-full shrink-0 items-center gap-2 border-t border-border',
-            'text-[12.5px] text-ink-3 transition-colors hover:bg-surface-2 hover:text-ink-2',
-            collapsed ? 'justify-center px-0' : 'px-6',
-          )}
+      <RailGroup>
+        <RailButton
+          label="Group models by task"
+          tooltip={groupModelsByTask ? 'Ungroup models' : 'Group by task'}
+          active={groupModelsByTask}
+          aria-pressed={groupModelsByTask}
+          onClick={toggleGrouping}
         >
-          <ChevronsLeft
-            aria-hidden="true"
-            className={cn(
-              'h-4 w-4 shrink-0 transition-transform duration-300',
-              collapsed && 'rotate-180',
-            )}
-            strokeWidth={1.8}
-          />
-          {!collapsed && <span>Collapse</span>}
-        </button>
-      ) : null}
+          <LayoutList aria-hidden="true" className="h-[18px] w-[18px]" strokeWidth={1.8} />
+        </RailButton>
+        {EXTERNAL_LINKS.map(({ href, label, icon: Icon }) => (
+          <RailLink key={href} href={href} label={label}>
+            <Icon aria-hidden="true" className="h-[18px] w-[18px]" strokeWidth={1.8} />
+          </RailLink>
+        ))}
+      </RailGroup>
+
+      <RailGroup className="mt-auto">
+        <RailLink href={ORG_URL} label={`Open ${ORG_DISPLAY_NAME} on Hugging Face`} tooltip="Open organization">
+          <span className="inline-flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-white ring-1 ring-border dark:bg-surface-2">
+            <Image src="/pluto-logo.webp" alt="" width={36} height={36} className="h-8 w-8 object-contain dark:hidden" />
+            <Image src="/pluto-logo-dark.webp" alt="" width={36} height={36} className="hidden h-8 w-8 object-contain dark:block" />
+          </span>
+        </RailLink>
+      </RailGroup>
     </aside>
   );
 }
 
-function ActiveBar() {
+function RailGroup({ className, children }: { className?: string; children: React.ReactNode }) {
+  return (
+    <div
+      className={cn(
+        'flex flex-col items-center gap-1.5 rounded-full border border-border/70 bg-surface p-2',
+        'shadow-[0_1px_2px_rgba(26,31,27,.03),0_12px_30px_-24px_rgba(26,31,27,.35)]',
+        'dark:border-border',
+        className,
+      )}
+    >
+      {children}
+    </div>
+  );
+}
+
+function Tooltip({ children }: { children: React.ReactNode }) {
   return (
     <span
       aria-hidden="true"
-      className="absolute left-0 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-r-full bg-jade-500"
-    />
+      className={cn(
+        'pointer-events-none absolute left-[calc(100%+14px)] top-1/2 z-50 hidden -translate-y-1/2 whitespace-nowrap',
+        'rounded-full bg-ink px-3 py-1.5 text-[12px] font-medium text-surface shadow-lg',
+        'group-hover:block group-hover:animate-[tip-in_160ms_ease-out_both] group-focus-visible:block',
+      )}
+    >
+      {children}
+    </span>
   );
 }
 
-function NavRow({
-  item,
+const railItemClass = (active: boolean) =>
+  cn(
+    'group relative inline-flex h-11 w-11 items-center justify-center rounded-full',
+    'transition-[background-color,color,box-shadow,transform] duration-200 ease-[var(--ease-ui)] active:scale-95',
+    active
+      ? 'bg-action text-on-action shadow-[0_10px_20px_-10px_color-mix(in_srgb,var(--color-action)_90%,transparent)]'
+      : 'text-ink-3 hover:bg-surface-2 hover:text-ink',
+  );
+
+function RailButton({
+  label,
+  tooltip,
   active,
-  collapsed,
-  onClick,
+  children,
+  ...rest
 }: {
-  item: NavItem;
+  label: string;
+  tooltip: string;
   active: boolean;
-  collapsed: boolean;
-  onClick: () => void;
-}) {
-  const Icon = item.icon;
+  children: React.ReactNode;
+} & Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'children'>) {
   return (
-    <li>
-      <button
-        type="button"
-        onClick={onClick}
-        aria-current={active ? 'true' : undefined}
-        title={collapsed ? item.label : undefined}
-        className={cn(
-          'group relative flex h-11 w-full items-center rounded-[13px] text-[13.5px] font-medium',
-          'transition-[background-color,color,transform] duration-200 active:scale-[.99]',
-          collapsed ? 'justify-center px-0' : 'justify-between px-3.5',
-          active
-            ? 'bg-jade-50 text-jade-900 shadow-[inset_0_0_0_1px_rgba(18,173,118,.08)]'
-            : 'text-ink-2 hover:bg-jade-50/60 hover:text-ink',
-        )}
-      >
-        {active ? <ActiveBar /> : null}
-        <span className={cn('flex items-center', collapsed ? 'justify-center' : 'min-w-0 gap-3')}>
-          <Icon
-            aria-hidden="true"
-            className={cn(
-              'h-[17px] w-[17px] shrink-0 transition-colors',
-              active ? 'text-jade-600' : 'text-ink-3 group-hover:text-ink-2',
-            )}
-            strokeWidth={1.7}
-          />
-          {!collapsed && <span className="truncate">{item.label}</span>}
-        </span>
-        {!collapsed && item.count !== undefined ? (
-          <span className="num inline-flex h-5 min-w-5 items-center justify-center rounded-full border border-jade-100 bg-jade-50 px-1.5 text-[10.5px] font-semibold leading-none text-jade-700">
-            {item.count}
-          </span>
-        ) : null}
-      </button>
-    </li>
+    <button type="button" aria-label={label} className={railItemClass(active)} {...rest}>
+      {children}
+      <Tooltip>{tooltip}</Tooltip>
+    </button>
   );
 }
 
-function ExternalRow({
+function RailLink({
   href,
   label,
-  icon: Icon,
-  collapsed,
-  onNavigate,
+  tooltip,
+  children,
 }: {
   href: string;
   label: string;
-  icon: typeof BookOpen;
-  collapsed: boolean;
+  tooltip?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={label}
+      className={railItemClass(false)}
+    >
+      {children}
+      <Tooltip>{tooltip ?? label}</Tooltip>
+    </a>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Mobile drawer                                                       */
+/* ------------------------------------------------------------------ */
+
+function DrawerPanel({
+  primaryNav,
+  activeSection,
+  groupModelsByTask,
+  onGo,
+  onToggleGrouping,
+  onNavigate,
+}: {
+  primaryNav: readonly NavItem[];
+  activeSection: string;
+  groupModelsByTask: boolean;
+  onGo: (item: NavItem) => void;
+  onToggleGrouping: () => void;
   onNavigate?: () => void;
 }) {
   return (
-    <li>
-      <a
-        href={href}
-        target="_blank"
-        rel="noopener noreferrer"
-        onClick={onNavigate}
-        title={collapsed ? label : undefined}
-        className={cn(
-          'group flex h-11 w-full items-center rounded-[13px] text-[13.5px] font-medium',
-          'text-ink-2 transition-colors duration-200 hover:bg-jade-50/60 hover:text-ink',
-          collapsed ? 'justify-center px-0' : 'gap-3 px-3.5',
-        )}
-      >
-        <Icon
-          aria-hidden="true"
-          className="h-[17px] w-[17px] shrink-0 text-ink-3 transition-colors group-hover:text-ink-2"
-          strokeWidth={1.7}
-        />
-        {!collapsed && <span className="truncate">{label}</span>}
-      </a>
-    </li>
+    <aside
+      aria-label="Dashboard sections"
+      className="flex h-full w-full flex-col overflow-hidden rounded-r-[28px] border-r border-border bg-surface shadow-[24px_0_60px_-30px_rgba(0,0,0,.45)]"
+    >
+      <div className="flex h-[76px] shrink-0 items-center gap-3 px-5">
+        <span className="inline-flex h-11 w-11 items-center justify-center overflow-hidden rounded-full bg-white ring-1 ring-border dark:bg-surface-2">
+          <Image src="/pluto-logo.webp" alt="" width={44} height={44} className="h-10 w-10 object-contain dark:hidden" priority />
+          <Image src="/pluto-logo-dark.webp" alt="" width={44} height={44} className="hidden h-10 w-10 object-contain dark:block" priority />
+        </span>
+        <span className="min-w-0">
+          <span className="block truncate font-display text-[17px] font-semibold leading-none tracking-[-0.01em] text-ink">
+            {ORG_DISPLAY_NAME}
+          </span>
+          <span className="mt-1.5 block text-[10.5px] font-semibold uppercase tracking-[0.14em] text-ink-3">
+            Hub Analytics
+          </span>
+        </span>
+      </div>
+
+      <nav className="flex-1 overflow-y-auto overflow-x-hidden px-3 pb-4 scrollbar-none">
+        <p className="mb-2 mt-2 px-3 text-[10.5px] font-bold uppercase tracking-[0.16em] text-ink-3/80">
+          Workspace
+        </p>
+        <ul className="space-y-1">
+          {primaryNav.map((item) => {
+            const active = isNavActive(activeSection, item.id);
+            const Icon = item.icon;
+            return (
+              <li key={item.id}>
+                <button
+                  type="button"
+                  onClick={() => onGo(item)}
+                  aria-current={active ? 'true' : undefined}
+                  className={cn(drawerRowClass, active ? drawerActive : drawerIdle, 'justify-between')}
+                >
+                  <span className="flex min-w-0 items-center gap-3">
+                    <Icon aria-hidden="true" className="h-[18px] w-[18px] shrink-0" strokeWidth={1.8} />
+                    <span className="truncate">{item.label}</span>
+                  </span>
+                  {item.count !== undefined ? (
+                    <span
+                      className={cn(
+                        'num inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-[10.5px] font-semibold leading-none',
+                        active ? 'bg-white/20 text-on-action' : 'bg-surface-2 text-ink-2',
+                      )}
+                    >
+                      {item.count}
+                    </span>
+                  ) : null}
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+
+        <div className="mx-3 my-5 h-px bg-border" />
+
+        <p className="mb-2 px-3 text-[10.5px] font-bold uppercase tracking-[0.16em] text-ink-3/80">
+          Explore
+        </p>
+        <ul className="space-y-1">
+          <li>
+            <button
+              type="button"
+              onClick={onToggleGrouping}
+              aria-pressed={groupModelsByTask}
+              className={cn(drawerRowClass, 'gap-3', groupModelsByTask ? 'bg-jade-50 text-jade-900' : drawerIdle)}
+            >
+              <LayoutList aria-hidden="true" className="h-[18px] w-[18px] shrink-0" strokeWidth={1.8} />
+              <span className="truncate">Group by task</span>
+            </button>
+          </li>
+          {EXTERNAL_LINKS.map(({ href, label, icon: Icon }) => (
+            <li key={href}>
+              <a
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={onNavigate}
+                className={cn(drawerRowClass, 'gap-3', drawerIdle)}
+              >
+                <Icon aria-hidden="true" className="h-[18px] w-[18px] shrink-0" strokeWidth={1.8} />
+                <span className="truncate">{label}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      <div className="shrink-0 p-4">
+        <a
+          href={ORG_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={onNavigate}
+          className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-full bg-action text-[13px] font-semibold text-on-action shadow-[0_10px_22px_-12px_color-mix(in_srgb,var(--color-action)_90%,transparent)] transition-[background-color,transform] hover:bg-action-hover active:scale-[.98]"
+        >
+          Open organization
+          <ExternalLink aria-hidden="true" className="h-3.5 w-3.5" strokeWidth={2} />
+        </a>
+      </div>
+    </aside>
   );
 }
+
+const drawerRowClass =
+  'flex h-12 w-full items-center rounded-full px-4 text-[14px] font-medium transition-[background-color,color] duration-200';
+const drawerActive =
+  'bg-action text-on-action shadow-[0_10px_20px_-12px_color-mix(in_srgb,var(--color-action)_90%,transparent)]';
+const drawerIdle = 'text-ink-2 hover:bg-surface-2 hover:text-ink';

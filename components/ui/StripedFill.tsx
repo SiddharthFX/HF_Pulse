@@ -19,12 +19,12 @@ export const HATCH_IDS = {
 } as const;
 
 const PATTERNS: ReadonlyArray<{ id: string; base: string; stripe: string }> = [
-  { id: HATCH_IDS.jade500, base: '#0FA871', stripe: 'rgba(255,255,255,.34)' },
-  { id: HATCH_IDS.jade400, base: '#34C88A', stripe: 'rgba(255,255,255,.34)' },
-  { id: HATCH_IDS.jade300, base: '#6FDCA8', stripe: 'rgba(255,255,255,.40)' },
-  { id: HATCH_IDS.jade200, base: '#A9EBC9', stripe: 'rgba(255,255,255,.46)' },
-  { id: HATCH_IDS.clay, base: '#F0A46A', stripe: 'rgba(255,255,255,.38)' },
-  { id: HATCH_IDS.lime, base: '#D8E85C', stripe: 'rgba(255,255,255,.42)' },
+  { id: HATCH_IDS.jade500, base: 'var(--color-jade-500)', stripe: 'rgba(255,255,255,.26)' },
+  { id: HATCH_IDS.jade400, base: 'var(--color-jade-400)', stripe: 'rgba(255,255,255,.28)' },
+  { id: HATCH_IDS.jade300, base: 'var(--color-jade-300)', stripe: 'rgba(255,255,255,.32)' },
+  { id: HATCH_IDS.jade200, base: 'var(--color-jade-200)', stripe: 'rgba(255,255,255,.38)' },
+  { id: HATCH_IDS.clay, base: 'var(--color-clay)', stripe: 'rgba(255,255,255,.32)' },
+  { id: HATCH_IDS.lime, base: 'var(--color-lime)', stripe: 'rgba(255,255,255,.36)' },
 ];
 
 /** Drop once inside any SVG (or Recharts <defs> slot) before referencing a pattern. */
@@ -52,15 +52,15 @@ export function hatchUrl(id: string): string {
   return `url(#${id})`;
 }
 
-/** Ordered vibrant color ramp for charts and distribution: Jade -> Cyan -> Indigo -> Amber -> Lime -> Rose -> Sky */
+/** Ordered, theme-aware chart ramp: Sage -> Eucalyptus -> Sand -> Dusk blue -> Moss -> Terracotta -> Lavender */
 export const RAMP = [
-  { solid: '#0FA871', hatch: HATCH_IDS.jade500 },
-  { solid: '#06B6D4', hatch: HATCH_IDS.jade400 },
-  { solid: '#6366F1', hatch: HATCH_IDS.jade300 },
-  { solid: '#F59E0B', hatch: HATCH_IDS.clay },
-  { solid: '#84CC16', hatch: HATCH_IDS.lime },
-  { solid: '#F43F5E', hatch: HATCH_IDS.clay },
-  { solid: '#0EA5E9', hatch: HATCH_IDS.jade200 },
+  { solid: 'var(--color-chart-1)', hatch: HATCH_IDS.jade500 },
+  { solid: 'var(--color-chart-2)', hatch: HATCH_IDS.jade400 },
+  { solid: 'var(--color-chart-3)', hatch: HATCH_IDS.clay },
+  { solid: 'var(--color-chart-4)', hatch: HATCH_IDS.jade300 },
+  { solid: 'var(--color-chart-5)', hatch: HATCH_IDS.lime },
+  { solid: 'var(--color-chart-6)', hatch: HATCH_IDS.clay },
+  { solid: 'var(--color-chart-7)', hatch: HATCH_IDS.jade200 },
 ] as const;
 
 export const OTHER_COLOR = 'var(--color-border-2)';

@@ -86,33 +86,30 @@ function MetricCard({
   dotClass,
 }: MetricCardProps) {
   return (
-    <Card index={index} className="min-h-[170px] overflow-hidden p-0">
+    <Card index={index} className="group min-h-[164px] overflow-hidden p-0">
       <div
         className={cn(
-          'pointer-events-none absolute -right-10 -top-12 h-36 w-36 rounded-full blur-3xl',
+          'pointer-events-none absolute -right-12 -top-14 h-36 w-36 rounded-full opacity-70 blur-3xl transition-opacity duration-500 group-hover:opacity-100',
           glowClass,
         )}
       />
-      <div className="absolute inset-x-5 top-0 h-px bg-gradient-to-r from-transparent via-jade-300/60 to-transparent" />
-      <div className="relative flex min-h-[170px] flex-col p-5">
-        <div className="flex items-center justify-between gap-3">
-          <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-ink-3">
-            {label}
-          </span>
+      <div className="relative flex min-h-[164px] flex-col p-5">
+        <div className="flex items-center gap-3">
           <span
             className={cn(
-              'inline-flex h-8 w-8 items-center justify-center rounded-[11px] ring-1',
+              'inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full ring-1 transition-transform duration-300 group-hover:scale-105',
               iconClass,
             )}
           >
-            <Icon aria-hidden="true" className="h-4 w-4" strokeWidth={1.8} />
+            <Icon aria-hidden="true" className="h-[18px] w-[18px]" strokeWidth={1.8} />
           </span>
+          <span className="text-[13px] font-medium text-ink-2">{label}</span>
         </div>
-        <div className="mt-auto pt-7">
-          <p className="num text-[34px] font-bold leading-none tracking-[-0.045em] text-ink">
+        <div className="mt-auto pt-6">
+          <p className="num font-display text-[34px] font-semibold leading-none tracking-[-0.035em] text-ink">
             {value}
           </p>
-          <p className="mt-3 flex items-center gap-2 text-[11.5px] leading-4 text-ink-3">
+          <p className="mt-2.5 flex items-center gap-2 text-[11.5px] leading-4 text-ink-3">
             <span className={cn('h-1.5 w-1.5 shrink-0 rounded-full', dotClass)} />
             {detail}
           </p>
@@ -132,27 +129,37 @@ function HostedAssetsKpiCard({ stats }: { stats: DerivedStats }) {
   return (
     <Card
       index={3}
-      className="min-h-[170px] overflow-hidden border-jade-100 bg-[linear-gradient(145deg,var(--color-surface)_0%,var(--color-jade-50)_100%)] p-0 hover:border-jade-200"
+      className="sage-gradient group min-h-[164px] overflow-hidden border-transparent p-0 dark:border-jade-200/40"
       id="assets"
     >
-      <div className="pointer-events-none absolute -right-10 -top-14 h-40 w-40 rounded-full bg-jade-200/35 blur-3xl" />
-      <div className="absolute inset-x-5 top-0 h-px bg-gradient-to-r from-transparent via-jade-400/70 to-transparent" />
-      <div className="relative flex min-h-[170px] flex-col p-5">
-        <div className="flex items-center justify-between gap-3">
-          <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-ink-3">
-            Hosted assets
+      <div className="hatch-soft pointer-events-none absolute inset-0 opacity-60" />
+      <svg
+        aria-hidden="true"
+        viewBox="0 0 120 60"
+        className="pointer-events-none absolute right-4 top-5 h-12 w-24 text-white/55 transition-transform duration-500 group-hover:translate-x-1"
+        fill="none"
+      >
+        <path
+          d="M2 50 C 22 50, 26 12, 46 12 S 70 46, 86 40 S 108 10, 118 8"
+          stroke="currentColor"
+          strokeWidth="3"
+          strokeLinecap="round"
+        />
+      </svg>
+      <div className="relative flex min-h-[164px] flex-col p-5">
+        <div className="flex items-center gap-3">
+          <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-white/15 text-white ring-1 ring-white/25 backdrop-blur-sm">
+            <HardDrive aria-hidden="true" className="h-[18px] w-[18px]" strokeWidth={1.8} />
           </span>
-          <span className="inline-flex h-8 w-8 items-center justify-center rounded-[11px] border border-jade-100 bg-surface/80 text-jade-700 shadow-sm">
-            <HardDrive aria-hidden="true" className="h-4 w-4" strokeWidth={1.8} />
-          </span>
+          <span className="text-[13px] font-medium text-white/85">Hosted assets</span>
         </div>
 
-        <div className="mt-auto pt-6">
+        <div className="mt-auto pt-5">
           <div className="flex items-end justify-between gap-3">
-            <p className="num text-[34px] font-bold leading-none tracking-[-0.045em] text-ink">
+            <p className="num font-display text-[34px] font-semibold leading-none tracking-[-0.035em] text-white">
               {total}
             </p>
-            <p className="pb-0.5 text-right text-[11px] leading-4 text-ink-3">
+            <p className="pb-0.5 text-right text-[11px] leading-4 text-white/75">
               {models} {models === 1 ? 'model' : 'models'}
               <br />
               {datasets} {datasets === 1 ? 'dataset' : 'datasets'}
@@ -160,7 +167,7 @@ function HostedAssetsKpiCard({ stats }: { stats: DerivedStats }) {
           </div>
 
           <div
-            className="mt-3 flex h-1.5 w-full overflow-hidden rounded-full border border-jade-100 bg-surface/75"
+            className="mt-3 flex h-1.5 w-full gap-0.5 overflow-hidden rounded-full bg-white/15"
             role="progressbar"
             aria-valuenow={Math.round(modelRatio * 100)}
             aria-valuemin={0}
@@ -168,23 +175,23 @@ function HostedAssetsKpiCard({ stats }: { stats: DerivedStats }) {
             aria-label="Model versus dataset distribution"
           >
             <div
-              className="h-full bg-jade-500 transition-all duration-300"
+              className="h-full rounded-full bg-white transition-all duration-300"
               style={{ width: `${modelRatio * 100}%` }}
               title={`Models: ${models}`}
             />
             <div
-              className="h-full bg-clay transition-all duration-300"
+              className="h-full rounded-full bg-[#f2c99a] transition-all duration-300"
               style={{ width: `${(1 - modelRatio) * 100}%` }}
               title={`Datasets: ${datasets}`}
             />
           </div>
 
-          <p className="mt-2.5 flex items-center justify-between gap-3 text-[11px] text-ink-3">
+          <p className="mt-2.5 flex items-center justify-between gap-3 text-[11px] text-white/75">
             <span className="flex items-center gap-1.5">
-              <span className="h-1.5 w-1.5 rounded-full bg-jade-500" />
+              <span className="h-1.5 w-1.5 rounded-full bg-white" />
               {updatedRecent > 0 ? `${updatedRecent} active in 30d` : 'All healthy'}
             </span>
-            <span className="num font-semibold text-jade-700">
+            <span className="num font-semibold text-white">
               {stats.avgDailyDownloads > 0
                 ? `~${formatCompact(stats.avgDailyDownloads)}/day`
                 : 'Active'}

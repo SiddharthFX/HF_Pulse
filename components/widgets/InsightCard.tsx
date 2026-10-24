@@ -21,13 +21,13 @@ export function InsightCard({
   const { leadingRepo, leadingRepoShare, updatedLast30d, repoCount } = stats;
 
   return (
-    <Card index={index} className="relative overflow-hidden p-4 sm:p-6">
+    <Card index={index} className="relative overflow-hidden p-5 sm:p-6">
       <div className="relative z-10 max-w-[62%] max-[900px]:max-w-full">
-        <h3 className="text-[17px] font-semibold leading-snug tracking-[-0.01em] text-ink">
+        <h3 className="font-display text-[18px] font-semibold leading-snug tracking-[-0.015em] text-ink">
           Where {ORG_DISPLAY_NAME}&rsquo;s downloads come from
         </h3>
 
-        <p className="mt-2 text-[13px] leading-[1.5] text-ink-2">
+        <p className="mt-2 text-[13px] leading-[1.55] text-ink-2">
           {leadingRepo && leadingRepoShare !== null ? (
             <>
               <span className="font-medium text-ink">{leadingRepo.name}</span>{' '}
@@ -44,7 +44,7 @@ export function InsightCard({
         <button
           type="button"
           onClick={() => scrollToSection('models')}
-          className="mt-3 inline-flex min-h-10 items-center gap-1 text-[13px] font-medium text-ink transition-colors hover:text-jade-700 sm:mt-4 sm:min-h-0"
+          className="mt-3.5 inline-flex h-9 items-center gap-1.5 rounded-full border border-border bg-surface-2 px-4 text-[12.5px] font-medium text-ink transition-[background-color,border-color,color] hover:border-jade-300 hover:bg-surface hover:text-jade-700"
         >
           View breakdown
           <ChevronRight aria-hidden="true" className="h-3.5 w-3.5" strokeWidth={2} />

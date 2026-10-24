@@ -2,7 +2,6 @@
 
 import { useMemo, useState } from 'react';
 import { Box, Database, LayoutGrid, Rows3 } from 'lucide-react';
-import { cn } from '@/lib/cn';
 import { humanizeTask } from '@/lib/format';
 import { Card } from '@/components/ui/Card';
 import { CountPill } from '@/components/ui/Badge';
@@ -130,12 +129,12 @@ export function RepoSection({
   );
 
   return (
-    <Card as="section" index={index} id={id} className="scroll-mt-[88px] p-4 sm:p-6" aria-labelledby={`${id}-title`}>
+    <Card as="section" index={index} id={id} className="scroll-mt-6 p-5 sm:p-6" aria-labelledby={`${id}-title`}>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex min-w-0 items-center gap-2.5">
           <h2
             id={`${id}-title`}
-            className="text-[16px] font-semibold tracking-[-0.01em] text-ink"
+            className="font-display text-[18px] font-semibold tracking-[-0.015em] text-ink"
           >
             {title}
           </h2>
@@ -144,19 +143,14 @@ export function RepoSection({
 
         <div className="flex flex-wrap items-center gap-2">
           {/* Recency Time Filter Buttons */}
-          <div className="flex h-11 items-center rounded-[var(--radius-inner)] bg-surface-2 p-0.5 sm:h-8">
+          <div className="seg">
             {TIME_FILTERS.map((tf) => (
               <button
                 key={tf.value}
                 type="button"
                 onClick={() => setTimeFilter(tf.value)}
                 aria-pressed={timeFilter === tf.value}
-                className={cn(
-                  'h-10 rounded-[11px] px-3.5 text-[13px] font-medium transition-colors duration-[160ms] sm:h-7 sm:px-2.5 sm:text-[12px]',
-                  timeFilter === tf.value
-                    ? 'bg-surface text-ink shadow-[0_1px_2px_rgba(16,20,18,.06)]'
-                    : 'text-ink-3 hover:text-ink-2',
-                )}
+                className="seg-item"
               >
                 {tf.label}
               </button>
@@ -226,21 +220,21 @@ function ViewToggle({
     <div
       role="group"
       aria-label="View mode"
-      className="inline-flex h-11 items-center gap-0.5 rounded-[var(--radius-inner)] bg-surface-2 p-0.5 sm:h-8"
+      className="seg"
     >
       <ToggleButton
         active={value === 'grid'}
         label="Grid view"
         onClick={() => onChange('grid')}
       >
-        <LayoutGrid aria-hidden="true" className="h-3.5 w-3.5" strokeWidth={1.8} />
+        <LayoutGrid aria-hidden="true" className="h-4 w-4" strokeWidth={1.8} />
       </ToggleButton>
       <ToggleButton
         active={value === 'table'}
         label="Table view"
         onClick={() => onChange('table')}
       >
-        <Rows3 aria-hidden="true" className="h-3.5 w-3.5" strokeWidth={1.8} />
+        <Rows3 aria-hidden="true" className="h-4 w-4" strokeWidth={1.8} />
       </ToggleButton>
     </div>
   );
@@ -263,11 +257,7 @@ function ToggleButton({
       aria-label={label}
       aria-pressed={active}
       onClick={onClick}
-      className={cn(
-        'inline-flex h-10 w-11 items-center justify-center rounded-[8px] sm:h-7 sm:w-8',
-        'transition-colors duration-[140ms]',
-        active ? 'bg-surface text-ink shadow-[0_1px_2px_rgba(16,20,18,.06)]' : 'text-ink-3 hover:text-ink-2',
-      )}
+      className="seg-item seg-icon"
     >
       {children}
     </button>

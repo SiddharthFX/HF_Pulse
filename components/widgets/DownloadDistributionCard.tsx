@@ -54,7 +54,7 @@ export function DownloadDistributionCard({
   const total = slices.reduce((acc, s) => acc + s.value, 0);
 
   return (
-    <Card index={index} className="flex flex-col p-4 sm:p-6">
+    <Card index={index} className="flex flex-col p-5 sm:p-6">
       <CardHeader
         title="Download distribution"
         subtitle="Share of lifetime downloads"
@@ -66,27 +66,27 @@ export function DownloadDistributionCard({
               options={SCOPES}
               onChange={setScope}
             />
-            <div className="flex h-11 items-center gap-0.5 rounded-[var(--radius-inner)] border border-border p-0.5 sm:h-8">
+            <div className="seg">
               <ChartToggleButton
                 active={chartView === 'bar'}
                 label="Bar view"
                 onClick={() => setChartView('bar')}
               >
-                <BarChart3 aria-hidden="true" className="h-4 w-4" strokeWidth={1.7} />
+                <BarChart3 aria-hidden="true" className="h-4 w-4" strokeWidth={1.8} />
               </ChartToggleButton>
               <ChartToggleButton
                 active={chartView === 'pie'}
                 label="Pie view"
                 onClick={() => setChartView('pie')}
               >
-                <PieIcon aria-hidden="true" className="h-4 w-4" strokeWidth={1.7} />
+                <PieIcon aria-hidden="true" className="h-4 w-4" strokeWidth={1.8} />
               </ChartToggleButton>
             </div>
           </div>
         }
       />
 
-      <p className="num mt-4 text-[32px] font-semibold leading-none tracking-[-0.02em] text-ink">
+      <p className="num font-display mt-4 text-[34px] font-semibold leading-none tracking-[-0.035em] text-ink">
         {formatCompact(total)}
       </p>
 
@@ -143,7 +143,7 @@ export function DownloadDistributionCard({
                     slice.repo && openRepo(slice.repo, event.currentTarget)
                   }
                     className={cn(
-                      'flex min-h-10 w-full items-center justify-between gap-3 rounded-[8px] px-2 sm:h-7 sm:min-h-0 sm:px-1.5',
+                      'flex min-h-10 w-full items-center justify-between gap-3 rounded-[12px] px-2.5 sm:h-8 sm:min-h-0 sm:px-2',
                       'transition-colors duration-[140ms]',
                       isHovered && 'bg-surface-2',
                       !slice.repo && 'cursor-default',
@@ -240,7 +240,7 @@ export function DownloadDistributionCard({
                     slice.repo && openRepo(slice.repo, event.currentTarget)
                   }
                     className={cn(
-                      'flex min-h-10 w-full items-center justify-between gap-3 rounded-[8px] px-2 sm:h-7 sm:min-h-0 sm:px-1.5',
+                      'flex min-h-10 w-full items-center justify-between gap-3 rounded-[12px] px-2.5 sm:h-8 sm:min-h-0 sm:px-2',
                       'transition-colors duration-[140ms]',
                       isHovered && 'bg-surface-2',
                       !slice.repo && 'cursor-default',
@@ -288,12 +288,7 @@ function ChartToggleButton({
       aria-pressed={active}
       title={label}
       onClick={onClick}
-      className={cn(
-        'inline-flex h-10 w-10 items-center justify-center rounded-[10px] transition-colors duration-[160ms] sm:h-7 sm:w-8',
-        active
-          ? 'border border-border-2 bg-surface text-ink shadow-[0_1px_2px_rgba(16,20,18,.06)]'
-          : 'text-ink-3 hover:text-ink-2',
-      )}
+      className="seg-item seg-icon"
     >
       {children}
     </button>

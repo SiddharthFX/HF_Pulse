@@ -108,9 +108,10 @@ export function RangeSelect<T extends string>({
           }
         }}
         className={cn(
-          'inline-flex h-10 items-center gap-1.5 rounded-[var(--radius-inner)] sm:h-8',
-          'bg-surface-2 px-3.5 text-[13px] font-medium text-ink-2 sm:px-3 sm:text-[12px]',
-          'transition-colors duration-[160ms] hover:bg-surface-3',
+          'inline-flex h-10 items-center gap-1.5 rounded-[var(--radius-pill)] border border-border sm:h-8',
+          'bg-surface px-4 text-[13px] font-medium text-ink-2 sm:px-3.5 sm:text-[12px]',
+          'transition-[background-color,border-color,color] duration-[160ms] hover:border-jade-200 hover:bg-jade-50 hover:text-ink',
+          open && 'border-jade-300 bg-jade-50 text-ink',
         )}
       >
         {selected?.label}
@@ -131,9 +132,9 @@ export function RangeSelect<T extends string>({
           aria-label={label}
           tabIndex={-1}
           className={cn(
-            'absolute z-30 mt-1.5 min-w-[136px] overflow-hidden rounded-[var(--radius-inner)]',
-            'border border-border bg-surface py-1',
-            'shadow-[0_8px_24px_-8px_rgba(16,20,18,.16)]',
+            'absolute z-30 mt-2 min-w-[150px] overflow-hidden rounded-[16px]',
+            'border border-border bg-surface/95 p-1 backdrop-blur-xl',
+            'shadow-[0_20px_44px_-18px_rgba(26,31,27,.35)] animate-[panel-in_160ms_cubic-bezier(.2,.8,.2,1)_both]',
             align === 'right' ? 'right-0' : 'left-0',
           )}
         >
@@ -151,7 +152,7 @@ export function RangeSelect<T extends string>({
                   onMouseDown={(event) => event.preventDefault()}
                   onClick={() => commit(i)}
                   className={cn(
-                    'flex w-full items-center justify-between gap-3 px-3 py-1.5 text-left',
+                    'flex w-full items-center justify-between gap-3 rounded-[11px] px-3 py-2 text-left',
                     'text-[12.5px] text-ink-2 transition-colors duration-[120ms]',
                     i === activeIndex && 'bg-surface-2',
                     isSelected && 'font-medium text-ink',

@@ -59,24 +59,19 @@ export function RecentActivityCard({
   }, [repos, activeWindow, sortKey]);
 
   return (
-    <Card index={index} className="flex flex-col p-4 sm:p-6">
+    <Card index={index} className="flex flex-col p-5 sm:p-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h3 className="text-[16px] font-semibold tracking-[-0.01em] text-ink">
+        <h3 className="font-display text-[17px] font-semibold tracking-[-0.01em] text-ink">
           Recent activity
         </h3>
-        <div className="flex h-10 items-center rounded-[var(--radius-inner)] bg-surface-2 p-0.5 sm:h-7">
+        <div className="seg">
           {WINDOWS.map((w) => (
             <button
               key={w.value}
               type="button"
               onClick={() => setActiveWindow(w.value)}
               aria-pressed={activeWindow === w.value}
-              className={cn(
-                'h-9 rounded-[9px] px-3 text-[12.5px] font-medium transition-colors duration-[160ms] sm:h-6 sm:px-2 sm:text-[11.5px]',
-                activeWindow === w.value
-                  ? 'bg-surface text-ink shadow-[0_1px_2px_rgba(16,20,18,.06)]'
-                  : 'text-ink-3 hover:text-ink-2',
-              )}
+              className="seg-item"
             >
               {w.label}
             </button>
@@ -127,7 +122,7 @@ export function RecentActivityCard({
                   i !== rows.length - 1 && 'border-b border-border',
                 )}
               >
-                <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] bg-jade-50 text-[11.5px] font-semibold text-jade-700">
+                <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-jade-50 text-[12px] font-semibold text-jade-700 ring-1 ring-black/5 dark:ring-white/10">
                   {monogram(repo.name)}
                 </span>
 

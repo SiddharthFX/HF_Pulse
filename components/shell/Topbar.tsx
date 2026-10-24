@@ -26,7 +26,12 @@ import {
 } from '@/lib/constants';
 import { IconButton } from '@/components/ui/IconButton';
 import { SearchField } from '@/components/shell/SearchField';
-import { usePersistentState } from '@/components/shell/ShellContext';
+import { buildPrimaryNav, isNavActive } from '@/components/shell/Sidebar';
+import {
+  scrollToSection,
+  usePersistentState,
+  useShell,
+} from '@/components/shell/ShellContext';
 import type { DashboardPayload } from '@/types/hf';
 
 type Toast = {
@@ -171,7 +176,7 @@ export function Topbar({
 
   return (
     <div
-      className="relative flex h-[72px] items-center gap-2 px-2 sm:gap-3 sm:px-4 md:px-7"
+      className="relative flex h-16 items-center gap-2 px-2 sm:gap-3 sm:px-3"
       data-prefs-revision={prefsRevision}
     >
       <div
@@ -207,9 +212,13 @@ export function Topbar({
           <Menu aria-hidden="true" className="h-[18px] w-[18px]" strokeWidth={1.7} />
         </IconButton>
 
-        <SearchField className="hidden max-w-[460px] flex-1 sm:block" />
+        <Brand />
 
-        <div className="ml-auto flex min-w-0 shrink-0 items-center gap-1 sm:gap-2.5">
+        <NavTabs datasetCount={payload.datasets.length} />
+
+        <SearchField className="hidden min-w-0 max-w-[420px] flex-1 sm:block xl:ml-auto xl:w-[260px] xl:flex-none 2xl:w-[300px]" />
+
+        <div className="ml-auto flex min-w-0 shrink-0 items-center gap-1 sm:gap-2 xl:ml-0">
           <IconButton
             ref={mobileSearchTriggerRef}
             aria-label="Search repositories"
@@ -225,6 +234,7 @@ export function Topbar({
             title={refreshLabel}
             onClick={refresh}
             disabled={refreshDisabled}
+            className="max-[379px]:h-10 max-[379px]:w-10"
           >
             <RefreshCw
               aria-hidden="true"
@@ -241,7 +251,7 @@ export function Topbar({
             target="_blank"
             rel="noopener noreferrer"
             title={`View ${ORG_DISPLAY_NAME} on Hugging Face`}
-            className="hidden h-10 items-center gap-2.5 rounded-[var(--radius-pill)] border border-border bg-surface/80 py-1 pl-1 pr-3.5 shadow-[0_1px_2px_rgba(16,23,19,.04)] backdrop-blur-sm transition-all duration-200 hover:border-jade-300 hover:bg-surface hover:shadow-sm lg:flex"
+            className="hidden h-11 items-center gap-2.5 rounded-[var(--radius-pill)] border border-border bg-surface py-1 pl-1 pr-4 transition-all duration-200 hover:border-jade-200 hover:bg-jade-50 2xl:flex"
           >
             <OrgAvatar />
             <span className="leading-tight">
@@ -255,7 +265,8 @@ export function Topbar({
             target="_blank"
             rel="noopener noreferrer"
             title={`View ${ORG_DISPLAY_NAME} on Hugging Face`}
-            className="hidden transition-transform duration-150 hover:scale-105 sm:inline-flex lg:hidden"
+            aria-label={`View ${ORG_DISPLAY_NAME} on Hugging Face`}
+            className="hidden rounded-full transition-transform duration-200 hover:scale-105 lg:inline-flex 2xl:hidden"
           >
             <OrgAvatar />
           </a>
@@ -265,12 +276,13 @@ export function Topbar({
             onClick={exportJson}
             aria-label="Export dashboard data as JSON"
             className={cn(
-              'inline-flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-[var(--radius-pill)] bg-action px-0 sm:w-auto sm:px-4',
-              'text-[12.5px] font-semibold text-on-action shadow-[0_8px_18px_-12px_rgba(18,173,118,.9)]',
-              'transition-[background-color,transform,box-shadow] duration-200 hover:bg-action-hover active:scale-[.98]',
+              'inline-flex h-11 w-11 shrink-0 items-center justify-center gap-2 rounded-[var(--radius-pill)] bg-action px-0 sm:w-auto sm:px-5',
+              'max-[379px]:h-10 max-[379px]:w-10',
+              'text-[13px] font-semibold text-on-action shadow-[0_10px_22px_-12px_color-mix(in_srgb,var(--color-action)_90%,transparent)]',
+              'transition-[background-color,transform,box-shadow] duration-200 hover:bg-action-hover active:scale-[.97]',
             )}
           >
-            <Download aria-hidden="true" className="h-4 w-4" strokeWidth={1.7} />
+            <Download aria-hidden="true" className="h-4 w-4" strokeWidth={1.9} />
             <span className="hidden sm:inline">Export JSON</span>
           </button>
         </div>
@@ -281,21 +293,30 @@ export function Topbar({
           role={toast.tone === 'error' ? 'alert' : 'status'}
           aria-live="polite"
           className={cn(
-            'absolute right-3 top-[64px] z-40 flex max-w-[calc(100%-1.5rem)] items-center gap-2 rounded-[var(--radius-pill)] sm:right-7',
-            'border bg-surface/95 px-3.5 py-2 text-[12px] font-medium text-ink backdrop-blur-xl',
-            'shadow-[0_18px_40px_-18px_rgba(16,23,19,.4)] animate-[card-in_200ms_cubic-bezier(.2,.8,.2,1)_both]',
-            toast.tone === 'success' && 'border-jade-100',
+            'absolute right-2 top-[calc(100%+12px)] z-40 flex max-w-[calc(100%-1rem)] items-center gap-2 rounded-[var(--radius-pill)]',
+            'border bg-surface/95 px-4 py-2.5 text-[12.5px] font-medium text-ink backdrop-blur-xl',
+            'shadow-[0_18px_40px_-18px_rgba(16,23,19,.4)] animate-[card-in_220ms_cubic-bezier(.2,.8,.2,1)_both]',
+            toast.tone === 'success' && 'border-jade-200',
             toast.tone === 'warning' && 'border-clay/40',
             toast.tone === 'error' && 'border-danger/35',
           )}
         >
-          {toast.tone === 'success' ? (
-            <Check aria-hidden="true" className="h-3.5 w-3.5 text-jade-600" strokeWidth={2} />
-          ) : toast.tone === 'warning' ? (
-            <Clock3 aria-hidden="true" className="h-3.5 w-3.5 text-clay-700" strokeWidth={2} />
-          ) : (
-            <AlertCircle aria-hidden="true" className="h-3.5 w-3.5 text-danger" strokeWidth={2} />
-          )}
+          <span
+            className={cn(
+              'inline-flex h-5 w-5 items-center justify-center rounded-full',
+              toast.tone === 'success' && 'bg-jade-50',
+              toast.tone === 'warning' && 'bg-clay-50',
+              toast.tone === 'error' && 'bg-danger/10',
+            )}
+          >
+            {toast.tone === 'success' ? (
+              <Check aria-hidden="true" className="h-3 w-3 text-jade-600" strokeWidth={2.4} />
+            ) : toast.tone === 'warning' ? (
+              <Clock3 aria-hidden="true" className="h-3 w-3 text-clay-700" strokeWidth={2.2} />
+            ) : (
+              <AlertCircle aria-hidden="true" className="h-3 w-3 text-danger" strokeWidth={2.2} />
+            )}
+          </span>
           {toast.message}
         </div>
       ) : null}
@@ -303,15 +324,74 @@ export function Topbar({
   );
 }
 
-function OrgAvatar() {
+function Brand() {
   return (
-    <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-[10px] border border-border bg-white shadow-sm dark:bg-surface-2">
-      <Image src="/pluto-logo.webp" alt="" width={32} height={32} className="h-7 w-7 object-contain dark:hidden" priority />
-      <Image src="/pluto-logo-dark.webp" alt="" width={32} height={32} className="hidden h-7 w-7 object-contain dark:block" priority />
+    <span className="flex min-w-0 shrink-0 items-center gap-2.5 max-[379px]:hidden md:pl-1">
+      <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white ring-1 ring-border dark:bg-surface-2">
+        <Image src="/pluto-logo.webp" alt="" width={40} height={40} className="h-9 w-9 object-contain dark:hidden" priority />
+        <Image src="/pluto-logo-dark.webp" alt="" width={40} height={40} className="hidden h-9 w-9 object-contain dark:block" priority />
+      </span>
+      <span className="hidden min-w-0 leading-none sm:block">
+        <span className="block truncate font-display text-[17px] font-semibold tracking-[-0.015em] text-ink">
+          {ORG_DISPLAY_NAME}
+        </span>
+        <span className="mt-1 block text-[10px] font-semibold uppercase tracking-[0.16em] text-ink-3">
+          Hub Analytics
+        </span>
+      </span>
     </span>
   );
 }
 
+/** Centered pill tabs (reference: Dashboard / Reports / …), mirroring the rail. */
+function NavTabs({ datasetCount }: { datasetCount: number }) {
+  const { activeSection, setActiveSection } = useShell();
+  const items = buildPrimaryNav(datasetCount);
+
+  return (
+    <nav aria-label="Sections" className="mx-auto hidden xl:block">
+      <ul className="flex items-center gap-1 rounded-full border border-border/70 bg-surface-2 p-1">
+        {items.map((item) => {
+          const active = isNavActive(activeSection, item.id);
+          return (
+            <li key={item.id}>
+              <button
+                type="button"
+                aria-current={active ? 'true' : undefined}
+                onClick={() => {
+                  setActiveSection(item.id);
+                  scrollToSection(item.target);
+                }}
+                className={cn(
+                  'inline-flex h-9 items-center gap-1.5 rounded-full px-4 text-[13px] font-medium transition-[background-color,color,box-shadow] duration-200',
+                  active
+                    ? 'bg-surface text-ink shadow-[0_1px_2px_rgba(26,31,27,.06),0_6px_16px_-10px_rgba(26,31,27,.35)] dark:bg-surface-3'
+                    : 'text-ink-3 hover:text-ink',
+                )}
+              >
+                {item.label}
+                {item.count !== undefined ? (
+                  <span className="num rounded-full bg-jade-50 px-1.5 py-0.5 text-[10px] font-semibold leading-none text-jade-700">
+                    {item.count}
+                  </span>
+                ) : null}
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+    </nav>
+  );
+}
+
+function OrgAvatar() {
+  return (
+    <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white ring-1 ring-border dark:bg-surface-2">
+      <Image src="/pluto-logo.webp" alt="" width={36} height={36} className="h-8 w-8 object-contain dark:hidden" priority />
+      <Image src="/pluto-logo-dark.webp" alt="" width={36} height={36} className="hidden h-8 w-8 object-contain dark:block" priority />
+    </span>
+  );
+}
 function ThemeToggle() {
   const [theme, setTheme] = useState<Theme>('light');
   const [ready, setReady] = useState(false);
@@ -349,7 +429,7 @@ function ThemeToggle() {
       window.localStorage.setItem(LS_KEYS.theme, JSON.stringify(theme));
     } catch {}
     document.querySelectorAll('meta[name="theme-color"]').forEach((meta) => {
-      meta.setAttribute('content', theme === 'dark' ? '#0b120f' : '#f4f7f4');
+      meta.setAttribute('content', theme === 'dark' ? '#0d100e' : '#ebeae4');
     });
     window.dispatchEvent(new CustomEvent('pluto:theme', { detail: { theme } }));
   }, [ready, theme]);
@@ -436,7 +516,7 @@ function SettingsPopover({ onPrefsChange }: { onPrefsChange: () => void }) {
           role="dialog"
           aria-label="Display settings"
           className={cn(
-            'absolute left-1/2 top-[50px] z-40 w-[min(236px,calc(100vw-1rem))] -translate-x-1/2 rounded-[16px]',
+            'absolute left-1/2 top-[54px] z-40 w-[min(248px,calc(100vw-1rem))] -translate-x-1/2 rounded-[20px] animate-[panel-in_160ms_cubic-bezier(.2,.8,.2,1)_both]',
             'border border-border bg-surface/95 p-2 backdrop-blur-xl sm:right-0 sm:left-auto sm:translate-x-0',
             'shadow-[0_20px_50px_-18px_rgba(16,23,19,.35)]',
           )}
@@ -472,7 +552,7 @@ function ToggleRow({
       role="switch"
       aria-checked={checked}
       onClick={onChange}
-      className="flex w-full items-center justify-between gap-3 rounded-[11px] px-2.5 py-2.5 text-left text-[12.5px] font-medium text-ink-2 transition-colors hover:bg-surface-2"
+      className="flex w-full items-center justify-between gap-3 rounded-[14px] px-3 py-2.5 text-left text-[12.5px] font-medium text-ink-2 transition-colors hover:bg-surface-2"
     >
       {label}
       <span

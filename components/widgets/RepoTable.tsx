@@ -64,7 +64,7 @@ export function RepoTable({
                   <span
                     aria-hidden="true"
                     className={cn(
-                      'num flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] text-[11.5px] font-semibold',
+                      'num flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[11.5px] font-semibold ring-1 ring-black/5 dark:ring-white/10',
                       repo.kind === 'model'
                         ? 'bg-jade-50 text-jade-700'
                         : 'bg-surface-2 text-ink-2',

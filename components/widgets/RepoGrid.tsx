@@ -55,19 +55,20 @@ function RepoCard({ repo, maxValue }: { repo: RepoView; maxValue: number }) {
       onClick={(event) => openRepo(repo, event.currentTarget)}
       aria-label={`${repo.name} — open details`}
       className={cn(
-        'group flex h-full w-full flex-col rounded-[var(--radius-inner)] border border-border/85',
-        'bg-surface p-4 text-left',
+        'group flex h-full w-full flex-col rounded-[20px] border border-border/70',
+        'bg-surface p-5 text-left',
+        'shadow-[0_1px_2px_rgba(26,31,27,.03),0_8px_20px_-16px_rgba(26,31,27,.25)] dark:border-border',
         'transition-[border-color,box-shadow,transform] duration-200 ease-[cubic-bezier(.2,.8,.2,1)]',
-        'hover:border-jade-300/80 dark:hover:border-jade-600/70 hover:shadow-[0_8px_24px_-10px_rgba(18,173,118,.2)]',
+        'hover:border-jade-300/80 hover:shadow-[0_16px_36px_-18px_rgba(26,31,27,.32)]',
         'hover:-translate-y-1 motion-reduce:hover:translate-y-0',
         'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-jade-500',
       )}
     >
-      <div className="flex items-start gap-3">
+      <div className="flex items-start gap-3.5">
         <span
           aria-hidden="true"
           className={cn(
-            'num flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] text-[13px] font-semibold',
+            'num flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-[13.5px] font-semibold ring-1 ring-black/5 dark:ring-white/10',
             repo.kind === 'model'
               ? 'bg-jade-50 text-jade-700'
               : 'bg-surface-2 text-ink-2',

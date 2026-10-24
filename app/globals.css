@@ -2,87 +2,116 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-@theme {
-  --color-page: #f4f7f4;
+/*
+ * Design system — "Sage" edition.
+ * Layout language from the Quixotic reference (floating header, pill nav,
+ * icon rail, soft 24px cards); palette from the warm sage reference.
+ * Token names are unchanged so every component inherits the new look.
+ */
+@theme static {
+  --color-page: #ebeae4;
   --color-surface: #ffffff;
-  --color-surface-2: #f8faf8;
-  --color-surface-3: #eef3ef;
-  --color-border: #e4eae5;
-  --color-border-2: #d6dfd8;
+  --color-surface-2: #f5f4ef;
+  --color-surface-3: #ebeae3;
+  --color-border: #e7e5de;
+  --color-border-2: #d7d4ca;
 
-  --color-ink: #132019;
-  --color-ink-2: #4e5d54;
-  --color-ink-3: #839188;
+  --color-ink: #1a1f1b;
+  --color-ink-2: #535b55;
+  --color-ink-3: #868d88;
 
-  --color-jade-50: #edfbf5;
-  --color-jade-100: #d5f6e7;
-  --color-jade-200: #aceccb;
-  --color-jade-300: #72ddaa;
-  --color-jade-400: #32c98a;
-  --color-jade-500: #12ad76;
-  --color-jade-600: #0a8c60;
-  --color-jade-700: #08704d;
-  --color-jade-900: #0a3b2b;
+  /* "jade" is kept as the token name; the hue is now a muted sage. */
+  --color-jade-50: #eef3ee;
+  --color-jade-100: #dde7de;
+  --color-jade-200: #bfd2c3;
+  --color-jade-300: #98b59f;
+  --color-jade-400: #74997d;
+  --color-jade-500: #5a8265;
+  --color-jade-600: #486d53;
+  --color-jade-700: #3a5a44;
+  --color-jade-900: #1e3426;
 
-  --color-clay: #efa269;
-  --color-clay-50: #fff2e8;
-  --color-clay-700: #9a572b;
-  --color-sky-50: #eaf7fc;
-  --color-sky-400: #2a9fc8;
-  --color-sky-700: #147399;
-  --color-lime: #d8e85c;
-  --color-danger: #d8544f;
-  --color-action: #08704d;
-  --color-action-hover: #065f40;
+  --color-clay: #d39a6a;
+  --color-clay-50: #f8eee4;
+  --color-clay-700: #95592f;
+  --color-sky-50: #edf1f6;
+  --color-sky-400: #7d93b8;
+  --color-sky-700: #4b6287;
+  --color-lime: #c3d07a;
+  --color-danger: #c4554d;
+  --color-action: #4f7659;
+  --color-action-hover: #426650;
   --color-on-action: #ffffff;
 
-  --radius-card: 22px;
-  --radius-inner: 14px;
+  /* Theme-aware chart ramp (SVG accepts var() in presentation attributes). */
+  --color-chart-1: #4f7c5c;
+  --color-chart-2: #7fb0a3;
+  --color-chart-3: #d2a65a;
+  --color-chart-4: #7d93b8;
+  --color-chart-5: #a7bd68;
+  --color-chart-6: #cf8a69;
+  --color-chart-7: #9a8cc2;
+
+  --radius-card: 24px;
+  --radius-inner: 16px;
   --radius-pill: 999px;
 
   --font-sans:
     var(--font-jakarta), ui-sans-serif, system-ui, -apple-system, 'Segoe UI',
     sans-serif;
+  --font-display:
+    var(--font-outfit), var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
 
   --ease-ui: cubic-bezier(0.2, 0.8, 0.2, 1);
 
   --animate-shimmer: shimmer 1.4s ease-in-out infinite;
-  --animate-card-in: card-in 320ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  --animate-card-in: card-in 420ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
   --animate-spin-slow: spin 900ms linear infinite;
 }
 
 .dark {
   color-scheme: dark;
-  --color-page: #0b120f;
-  --color-surface: #111a16;
-  --color-surface-2: #17211c;
-  --color-surface-3: #1e2a23;
-  --color-border: #26362d;
-  --color-border-2: #35483c;
+  --color-page: #0d100e;
+  --color-surface: #151916;
+  --color-surface-2: #1b201c;
+  --color-surface-3: #232924;
+  --color-border: #252b26;
+  --color-border-2: #333b35;
 
-  --color-ink: #edf7f1;
-  --color-ink-2: #b6c7bc;
-  --color-ink-3: #809587;
+  --color-ink: #eef1ec;
+  --color-ink-2: #b3bbb4;
+  --color-ink-3: #7f8981;
 
-  --color-jade-50: #10271e;
-  --color-jade-100: #173a2b;
-  --color-jade-200: #20523c;
-  --color-jade-300: #35c98c;
-  --color-jade-400: #38d99a;
-  --color-jade-500: #25c98a;
-  --color-jade-600: #1fb77d;
-  --color-jade-700: #7ae0b3;
-  --color-jade-900: #b9f2d7;
+  --color-jade-50: #1a241d;
+  --color-jade-100: #213026;
+  --color-jade-200: #2d4433;
+  --color-jade-300: #6f9d7b;
+  --color-jade-400: #86b391;
+  --color-jade-500: #8fbf9b;
+  --color-jade-600: #a2cbab;
+  --color-jade-700: #b7d7bd;
+  --color-jade-900: #dbeadf;
 
-  --color-clay-50: #2d2017;
-  --color-clay-700: #f3a776;
-  --color-sky-50: #102833;
-  --color-sky-400: #48c7ec;
-  --color-sky-700: #8adcf7;
+  --color-clay: #dba077;
+  --color-clay-50: #2a2019;
+  --color-clay-700: #e6ac83;
+  --color-sky-50: #19202a;
+  --color-sky-400: #9db2d8;
+  --color-sky-700: #b8c9e6;
+  --color-lime: #c9d886;
+  --color-danger: #e0776e;
 
-  --color-action: #1fb77d;
-  --color-action-hover: #38d99a;
-  --color-on-action: #061b12;
+  --color-action: #8fbf9b;
+  --color-action-hover: #a6cfb0;
+  --color-on-action: #0e1a12;
+
+  --color-chart-1: #8fc49c;
+  --color-chart-2: #8bcfc0;
+  --color-chart-3: #e3bb72;
+  --color-chart-4: #9fb4da;
+  --color-chart-5: #c3d681;
+  --color-chart-6: #e5a184;
+  --color-chart-7: #b5a8de;
 }
 
 @keyframes shimmer {
@@ -97,7 +126,7 @@
 @keyframes card-in {
   from {
     opacity: 0;
-    transform: translateY(8px) scale(0.995);
+    transform: translateY(10px);
   }
   to {
     opacity: 1;
@@ -125,11 +154,33 @@
   }
 }
 
+@keyframes drawer-in {
+  from {
+    opacity: 0;
+    transform: translateX(-16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 @keyframes sheet-in {
   from {
     transform: translateY(100%);
   }
   to {
+    transform: none;
+  }
+}
+
+@keyframes tip-in {
+  from {
+    opacity: 0;
+    transform: translateX(-4px);
+  }
+  to {
+    opacity: 1;
     transform: none;
   }
 }
@@ -167,14 +218,9 @@
   body {
     background:
       radial-gradient(
-        circle at 88% -8%,
-        color-mix(in srgb, var(--color-jade-200) 22%, transparent) 0,
-        transparent 31rem
-      ),
-      radial-gradient(
-        circle at 12% 105%,
-        color-mix(in srgb, var(--color-jade-100) 20%, transparent) 0,
-        transparent 36rem
+        circle at 85% -10%,
+        color-mix(in srgb, var(--color-jade-100) 55%, transparent) 0,
+        transparent 34rem
       ),
       var(--color-page);
     background-attachment: fixed;
@@ -183,6 +229,13 @@
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
     overflow-x: hidden;
+    transition: background-color 240ms ease;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
   }
 
   button,
@@ -197,7 +250,7 @@
 
   .num {
     font-variant-numeric: tabular-nums;
-    letter-spacing: -0.025em;
+    letter-spacing: -0.02em;
   }
 
   :focus-visible {
@@ -209,13 +262,131 @@
   input:focus-visible,
   select:focus-visible,
   [tabindex]:focus-visible {
-    outline: 2px solid color-mix(in srgb, var(--color-jade-500) 58%, transparent);
+    outline: 2px solid color-mix(in srgb, var(--color-jade-500) 60%, transparent);
     outline-offset: 2px;
-    border-radius: 8px;
+    border-radius: 10px;
   }
 
   dialog::backdrop {
     background: transparent;
+  }
+}
+
+@layer components {
+  /* Segmented pill control — the reference's "Monthly | Annually" switch. */
+  .seg {
+    display: inline-flex;
+    max-width: 100%;
+    align-items: center;
+    gap: 2px;
+    overflow-x: auto;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    background: var(--color-surface-2);
+    padding: 3px;
+    scrollbar-width: none;
+  }
+
+  .seg::-webkit-scrollbar {
+    display: none;
+  }
+
+  .seg-item {
+    display: inline-flex;
+    height: 36px;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    border-radius: 999px;
+    padding: 0 14px;
+    color: var(--color-ink-3);
+    font-size: 12.5px;
+    font-weight: 500;
+    white-space: nowrap;
+    transition:
+      background-color 180ms var(--ease-ui),
+      color 180ms var(--ease-ui),
+      box-shadow 180ms var(--ease-ui),
+      transform 120ms var(--ease-ui);
+  }
+
+  .seg-item:hover:not(:disabled) {
+    color: var(--color-ink);
+  }
+
+  .seg-item:active:not(:disabled) {
+    transform: scale(0.97);
+  }
+
+  .seg-item[aria-pressed='true'] {
+    background: var(--color-action);
+    color: var(--color-on-action);
+    font-weight: 600;
+    box-shadow: 0 6px 14px -8px color-mix(in srgb, var(--color-action) 85%, transparent);
+  }
+
+  .seg-item:disabled {
+    cursor: not-allowed;
+    opacity: 0.4;
+  }
+
+  .seg-icon {
+    width: 38px;
+    padding: 0;
+  }
+
+  @media (min-width: 640px) {
+    .seg-item {
+      height: 28px;
+      padding: 0 12px;
+      font-size: 12px;
+    }
+
+    .seg-icon {
+      width: 32px;
+      padding: 0;
+    }
+  }
+
+  /* Circular icon chip used in card headers (reference's ↗ buttons). */
+  .chip-icon {
+    display: inline-flex;
+    height: 40px;
+    width: 40px;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    background: var(--color-surface);
+    color: var(--color-ink-2);
+    transition:
+      background-color 180ms var(--ease-ui),
+      border-color 180ms var(--ease-ui),
+      color 180ms var(--ease-ui),
+      transform 180ms var(--ease-ui);
+  }
+
+  .chip-icon:hover {
+    border-color: var(--color-jade-300);
+    background: var(--color-jade-50);
+    color: var(--color-jade-700);
+    transform: rotate(-8deg);
+  }
+
+  /* Sage gradient used by featured surfaces (image 1 "Activity" card). */
+  .sage-gradient {
+    background:
+      radial-gradient(120% 140% at 100% 0%, rgba(255, 255, 255, 0.18) 0%, transparent 55%),
+      linear-gradient(140deg, #86a58b 0%, #5d8266 52%, #48694f 100%);
+    color: #ffffff;
+  }
+
+  .dark .sage-gradient {
+    background:
+      radial-gradient(120% 140% at 100% 0%, rgba(255, 255, 255, 0.08) 0%, transparent 55%),
+      linear-gradient(140deg, #3c5b44 0%, #2c4433 55%, #213328 100%);
   }
 }
 
@@ -252,17 +423,21 @@
   .hatch-soft {
     background-image: repeating-linear-gradient(
       135deg,
-      rgba(255, 255, 255, 0.06) 0 3px,
+      rgba(255, 255, 255, 0.08) 0 3px,
       transparent 3px 7px
     );
   }
 
   .mask-fade-b {
-    mask-image: linear-gradient(to bottom, #000 78%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 82%, transparent 100%);
   }
 
   .mask-fade-l {
     mask-image: linear-gradient(to right, transparent 0%, #000 42%);
+  }
+
+  .font-display {
+    font-family: var(--font-display);
   }
 }
 

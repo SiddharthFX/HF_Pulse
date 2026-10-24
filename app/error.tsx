@@ -17,11 +17,11 @@ export default function DashboardError({
 }) {
   return (
     <div className="flex min-h-dvh items-center justify-center p-6">
-      <div className="w-full max-w-[440px] rounded-[var(--radius-card)] border border-border bg-surface p-7 text-center shadow-[0_1px_2px_rgba(16,20,18,.04)]">
-        <span className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-full bg-surface-2">
-          <AlertCircle aria-hidden="true" className="h-5 w-5 text-danger" strokeWidth={1.7} />
+      <div className="w-full max-w-[440px] rounded-[var(--radius-card)] border border-border bg-surface p-8 text-center shadow-[0_1px_2px_rgba(26,31,27,.04),0_16px_40px_-24px_rgba(26,31,27,.3)]">
+        <span className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-full bg-danger/10">
+          <AlertCircle aria-hidden="true" className="h-6 w-6 text-danger" strokeWidth={1.8} />
         </span>
-        <h1 className="text-[18px] font-semibold tracking-[-0.01em] text-ink">
+        <h1 className="font-display text-[20px] font-semibold tracking-[-0.015em] text-ink">
           Something went wrong
         </h1>
         <p className="mt-2 text-[13px] leading-[1.5] text-ink-2">

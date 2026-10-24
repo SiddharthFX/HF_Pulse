@@ -25,13 +25,13 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
         ref={ref}
         type={type}
         className={cn(
-        'inline-flex shrink-0 items-center justify-center rounded-[var(--radius-inner)]',
+        'inline-flex shrink-0 items-center justify-center rounded-full',
         'text-ink-2 transition-[background-color,border-color,color,transform,box-shadow] duration-200',
         'active:scale-95 disabled:cursor-not-allowed disabled:opacity-45',
         variant === 'bordered' &&
-          'border border-border bg-surface shadow-[0_1px_2px_rgba(16,23,19,.04)] hover:border-border-2 hover:bg-surface-2 hover:shadow-[0_6px_14px_-10px_rgba(16,23,19,.5)]',
-        variant === 'surface' && 'bg-surface-2 hover:bg-surface-3',
-        variant === 'ghost' && 'hover:bg-surface-2',
+          'border border-border bg-surface hover:border-jade-200 hover:bg-jade-50 hover:text-jade-700',
+        variant === 'surface' && 'bg-surface-2 hover:bg-surface-3 hover:text-ink',
+        variant === 'ghost' && 'hover:bg-surface-2 hover:text-ink',
         size === 28 && 'h-7 w-7',
         size === 32 && 'h-8 w-8',
         size === 44 && 'h-11 w-11',

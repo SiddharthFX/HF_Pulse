@@ -19,7 +19,6 @@ import {
   Mountain,
   MountainSnow,
 } from 'lucide-react';
-import { cn } from '@/lib/cn';
 import { formatCompact, formatFull, truncate } from '@/lib/format';
 import { LS_KEYS } from '@/lib/constants';
 import { Card } from '@/components/ui/Card';
@@ -170,12 +169,12 @@ export function DownloadsOverviewCard({
         : Math.max(...rows.map((r) => r.lifetime ?? 0), 1);
 
   return (
-    <Card index={index} className="flex flex-col p-4 sm:p-6">
+    <Card index={index} className="flex flex-col p-5 sm:p-6">
       {/* Header Section */}
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <div className="flex items-baseline gap-3">
-            <p className="num text-[clamp(32px,3vw,44px)] font-bold leading-none tracking-[-0.03em] text-ink transition-all duration-200">
+            <p className="num font-display text-[clamp(32px,3vw,44px)] font-semibold leading-none tracking-[-0.035em] text-ink transition-all duration-200">
               {formatCompact(displayTotal)}
               {isPartial && (mode === 'lifetime' || mode === 'both') ? (
                 <span
@@ -190,7 +189,7 @@ export function DownloadsOverviewCard({
             </p>
 
             {summitRepo && (
-              <div className="hidden sm:inline-flex items-center gap-1.5 rounded-[var(--radius-pill)] border border-jade-200/80 bg-jade-50 px-2.5 py-1 text-[11.5px] font-medium text-jade-900 shadow-xs transition-all duration-200">
+              <div className="hidden sm:inline-flex items-center gap-1.5 rounded-[var(--radius-pill)] border border-jade-200/70 bg-jade-50 px-3 py-1 text-[11.5px] font-medium text-jade-900 transition-all duration-200">
                 <Mountain className="h-3.5 w-3.5 text-jade-600" />
                 <span>
                   Peak: <strong>{summitRepo.name}</strong> ({formatCompact(summitRepo.value)})
@@ -208,19 +207,14 @@ export function DownloadsOverviewCard({
           <div className="flex flex-wrap items-center gap-2">
             {/* Metric Mode Filter */}
             {tab === 'repos' ? (
-              <div className="flex h-11 max-w-full items-center overflow-x-auto rounded-[var(--radius-inner)] bg-surface-2 p-0.5 scrollbar-none sm:h-8">
+              <div className="seg">
                 {MODE_OPTIONS.map((option) => (
                   <button
                     key={option.value}
                     type="button"
                     onClick={() => setMode(option.value)}
                     aria-pressed={mode === option.value}
-                    className={cn(
-                      'h-10 rounded-[11px] px-3.5 text-[13px] font-medium transition-all duration-[160ms] sm:h-7 sm:px-2.5 sm:text-[12px]',
-                      mode === option.value
-                        ? 'bg-surface text-ink shadow-[0_1px_2px_rgba(16,20,18,.08)] font-semibold'
-                        : 'text-ink-3 hover:text-ink-2',
-                    )}
+                    className="seg-item"
                   >
                     {option.label}
                   </button>
@@ -229,7 +223,7 @@ export function DownloadsOverviewCard({
             ) : null}
 
             {/* Chart Style Switchers */}
-            <div className="flex h-11 items-center gap-0.5 rounded-[var(--radius-inner)] border border-border p-0.5 sm:h-8">
+            <div className="seg">
               {tab === 'repos' ? (
                 <>
                   <TabButton
@@ -279,19 +273,19 @@ export function DownloadsOverviewCard({
           {/* Color Legend */}
           <div className="flex flex-wrap items-center gap-2.5 sm:gap-3.5">
             {mode === 'lifetime' && (
-              <LegendDot color="#0FA871" label="Lifetime Peak" />
+              <LegendDot color="var(--color-chart-1)" label="Lifetime Peak" />
             )}
             {mode === '30d' && (
-              <LegendDot color="#06B6D4" label="30-day Velocity" />
+              <LegendDot color="var(--color-chart-2)" label="30-day Velocity" />
             )}
             {mode === '7d' && (
-              <LegendDot color="#8B5CF6" label="7-day Trend" />
+              <LegendDot color="var(--color-chart-4)" label="7-day Trend" />
             )}
             {mode === 'both' && (
               <>
-                <LegendDot color="#0FA871" label="Lifetime" />
-                <LegendDot color="#06B6D4" label="30-day" />
-                <LegendDot color="#F59E0B" label="Likes" />
+                <LegendDot color="var(--color-chart-1)" label="Lifetime" />
+                <LegendDot color="var(--color-chart-2)" label="30-day" />
+                <LegendDot color="var(--color-chart-3)" label="Likes" />
               </>
             )}
           </div>
@@ -332,23 +326,23 @@ export function DownloadsOverviewCard({
               >
                 <defs>
                   <linearGradient id="barGradLifetime" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#10B981" />
-                    <stop offset="100%" stopColor="#059669" />
+                    <stop offset="0%" stopColor="var(--color-chart-1)" />
+                    <stop offset="100%" stopColor="var(--color-jade-600)" />
                   </linearGradient>
                   <linearGradient id="barGrad30d" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#38BDF8" />
-                    <stop offset="100%" stopColor="#0284C7" />
+                    <stop offset="0%" stopColor="var(--color-chart-2)" />
+                    <stop offset="100%" stopColor="var(--color-chart-2)" />
                   </linearGradient>
                   <linearGradient id="barGrad7d" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#A855F7" />
-                    <stop offset="100%" stopColor="#7C3AED" />
+                    <stop offset="0%" stopColor="var(--color-chart-4)" />
+                    <stop offset="100%" stopColor="var(--color-chart-4)" />
                   </linearGradient>
                   <linearGradient id="barGradLikes" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#FBBF24" />
-                    <stop offset="100%" stopColor="#D97706" />
+                    <stop offset="0%" stopColor="var(--color-chart-3)" />
+                    <stop offset="100%" stopColor="var(--color-chart-3)" />
                   </linearGradient>
                 </defs>
-                <CartesianGrid stroke="var(--color-border-2)" strokeDasharray="3 3" vertical={false} />
+                <CartesianGrid stroke="var(--color-border)" strokeDasharray="4 6" vertical={false} />
                 <XAxis
                   dataKey="short"
                   tickLine={false}
@@ -381,7 +375,7 @@ export function DownloadsOverviewCard({
                     dataKey="lifetime"
                     name="Lifetime"
                     minPointSize={4}
-                    radius={[6, 6, 0, 0]}
+                    radius={[10, 10, 4, 4]}
                     fill="url(#barGradLifetime)"
                     isAnimationActive={false}
                     onClick={(_, i) => {
@@ -404,7 +398,7 @@ export function DownloadsOverviewCard({
                     dataKey="d30"
                     name="30-day"
                     minPointSize={4}
-                    radius={[6, 6, 0, 0]}
+                    radius={[10, 10, 4, 4]}
                     fill="url(#barGrad30d)"
                     isAnimationActive={false}
                     onClick={(_, i) => {
@@ -427,7 +421,7 @@ export function DownloadsOverviewCard({
                     dataKey="d7"
                     name="7-day"
                     minPointSize={4}
-                    radius={[6, 6, 0, 0]}
+                    radius={[10, 10, 4, 4]}
                     fill="url(#barGrad7d)"
                     isAnimationActive={false}
                     onClick={(_, i) => {
@@ -450,7 +444,7 @@ export function DownloadsOverviewCard({
                     dataKey="likes"
                     name="Likes"
                     minPointSize={4}
-                    radius={[6, 6, 0, 0]}
+                    radius={[10, 10, 4, 4]}
                     fill="url(#barGradLikes)"
                     isAnimationActive={false}
                     onClick={(_, i) => {
@@ -493,33 +487,33 @@ export function DownloadsOverviewCard({
                 <defs>
                   {/* Mountain Lifetime Ridge Gradient */}
                   <linearGradient id="mountainLifetime" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#0FA871" stopOpacity={0.62} />
-                    <stop offset="45%" stopColor="#10B981" stopOpacity={0.28} />
-                    <stop offset="100%" stopColor="#0FA871" stopOpacity={0.01} />
+                    <stop offset="0%" stopColor="var(--color-chart-1)" stopOpacity={0.62} />
+                    <stop offset="45%" stopColor="var(--color-chart-1)" stopOpacity={0.28} />
+                    <stop offset="100%" stopColor="var(--color-chart-1)" stopOpacity={0.01} />
                   </linearGradient>
 
                   {/* Mountain 30-Day Ridge Gradient */}
                   <linearGradient id="mountain30d" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#06B6D4" stopOpacity={0.72} />
-                    <stop offset="50%" stopColor="#38BDF8" stopOpacity={0.30} />
-                    <stop offset="100%" stopColor="#06B6D4" stopOpacity={0.01} />
+                    <stop offset="0%" stopColor="var(--color-chart-2)" stopOpacity={0.72} />
+                    <stop offset="50%" stopColor="var(--color-chart-2)" stopOpacity={0.30} />
+                    <stop offset="100%" stopColor="var(--color-chart-2)" stopOpacity={0.01} />
                   </linearGradient>
 
                   {/* Mountain 7-Day Ridge Gradient */}
                   <linearGradient id="mountain7d" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#8B5CF6" stopOpacity={0.72} />
-                    <stop offset="50%" stopColor="#A855F7" stopOpacity={0.30} />
-                    <stop offset="100%" stopColor="#8B5CF6" stopOpacity={0.01} />
+                    <stop offset="0%" stopColor="var(--color-chart-4)" stopOpacity={0.72} />
+                    <stop offset="50%" stopColor="var(--color-chart-4)" stopOpacity={0.30} />
+                    <stop offset="100%" stopColor="var(--color-chart-4)" stopOpacity={0.01} />
                   </linearGradient>
 
                   {/* Mountain Likes Gradient */}
                   <linearGradient id="mountainLikes" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#F59E0B" stopOpacity={0.65} />
-                    <stop offset="100%" stopColor="#F59E0B" stopOpacity={0.02} />
+                    <stop offset="0%" stopColor="var(--color-chart-3)" stopOpacity={0.65} />
+                    <stop offset="100%" stopColor="var(--color-chart-3)" stopOpacity={0.02} />
                   </linearGradient>
                 </defs>
 
-                <CartesianGrid stroke="var(--color-border-2)" strokeDasharray="3 3" vertical={false} />
+                <CartesianGrid stroke="var(--color-border)" strokeDasharray="4 6" vertical={false} />
                 <XAxis
                   dataKey="short"
                   tickLine={false}
@@ -538,7 +532,7 @@ export function DownloadsOverviewCard({
                   tickFormatter={(v: number) => (v < 1 ? '0' : formatCompact(v))}
                 />
                 <Tooltip
-                  cursor={{ stroke: '#0FA871', strokeWidth: 1.5, strokeDasharray: '4 4' }}
+                  cursor={{ stroke: 'var(--color-chart-1)', strokeWidth: 1.5, strokeDasharray: '4 4' }}
                   content={
                     <MountainTooltip
                       activeMode={mode}
@@ -553,19 +547,19 @@ export function DownloadsOverviewCard({
                     type={chartStyle === 'mountain' ? 'monotone' : 'linear'}
                     dataKey="lifetime"
                     name="Lifetime"
-                    stroke="#0FA871"
+                    stroke="var(--color-chart-1)"
                     strokeWidth={2.6}
                     fill="url(#mountainLifetime)"
                     isAnimationActive={false}
                     dot={{
                       r: 3.5,
-                      fill: '#0FA871',
+                      fill: 'var(--color-chart-1)',
                       stroke: 'var(--color-surface)',
                       strokeWidth: 2,
                     }}
                     activeDot={{
                       r: 6,
-                      fill: '#0FA871',
+                      fill: 'var(--color-chart-1)',
                       stroke: 'var(--color-surface)',
                       strokeWidth: 2.5,
                       className: 'cursor-pointer animate-pulse',
@@ -579,19 +573,19 @@ export function DownloadsOverviewCard({
                     type={chartStyle === 'mountain' ? 'monotone' : 'linear'}
                     dataKey="d30"
                     name="30-day"
-                    stroke="#06B6D4"
+                    stroke="var(--color-chart-2)"
                     strokeWidth={2.2}
                     fill="url(#mountain30d)"
                     isAnimationActive={false}
                     dot={{
                       r: 3,
-                      fill: '#06B6D4',
+                      fill: 'var(--color-chart-2)',
                       stroke: 'var(--color-surface)',
                       strokeWidth: 1.8,
                     }}
                     activeDot={{
                       r: 5.5,
-                      fill: '#06B6D4',
+                      fill: 'var(--color-chart-2)',
                       stroke: 'var(--color-surface)',
                       strokeWidth: 2,
                       className: 'cursor-pointer',
@@ -605,19 +599,19 @@ export function DownloadsOverviewCard({
                     type={chartStyle === 'mountain' ? 'monotone' : 'linear'}
                     dataKey="d7"
                     name="7-day"
-                    stroke="#8B5CF6"
+                    stroke="var(--color-chart-4)"
                     strokeWidth={2.2}
                     fill="url(#mountain7d)"
                     isAnimationActive={false}
                     dot={{
                       r: 3,
-                      fill: '#8B5CF6',
+                      fill: 'var(--color-chart-4)',
                       stroke: 'var(--color-surface)',
                       strokeWidth: 1.8,
                     }}
                     activeDot={{
                       r: 5.5,
-                      fill: '#8B5CF6',
+                      fill: 'var(--color-chart-4)',
                       stroke: 'var(--color-surface)',
                       strokeWidth: 2,
                       className: 'cursor-pointer',
@@ -631,19 +625,19 @@ export function DownloadsOverviewCard({
                     type={chartStyle === 'mountain' ? 'monotone' : 'linear'}
                     dataKey="likes"
                     name="Likes"
-                    stroke="#F59E0B"
+                    stroke="var(--color-chart-3)"
                     strokeWidth={1.8}
                     fill="url(#mountainLikes)"
                     isAnimationActive={false}
                     dot={{
                       r: 2.5,
-                      fill: '#F59E0B',
+                      fill: 'var(--color-chart-3)',
                       stroke: 'var(--color-surface)',
                       strokeWidth: 1.5,
                     }}
                     activeDot={{
                       r: 4.5,
-                      fill: '#F59E0B',
+                      fill: 'var(--color-chart-3)',
                       stroke: 'var(--color-surface)',
                       strokeWidth: 2,
                       className: 'cursor-pointer',
@@ -662,11 +656,11 @@ export function DownloadsOverviewCard({
             >
               <defs>
                 <linearGradient id="trendFill" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#0FA871" stopOpacity={0.24} />
-                  <stop offset="100%" stopColor="#0FA871" stopOpacity={0} />
+                  <stop offset="0%" stopColor="var(--color-chart-1)" stopOpacity={0.24} />
+                  <stop offset="100%" stopColor="var(--color-chart-1)" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid stroke="var(--color-border-2)" strokeDasharray="3 3" vertical={false} />
+              <CartesianGrid stroke="var(--color-border)" strokeDasharray="4 6" vertical={false} />
               <XAxis
                 dataKey="at"
                 tickLine={false}
@@ -690,11 +684,11 @@ export function DownloadsOverviewCard({
               <Area
                 type="monotone"
                 dataKey="totalAllTime"
-                stroke="#0FA871"
+                stroke="var(--color-chart-1)"
                 strokeWidth={2.4}
                 fill="url(#trendFill)"
                 dot={false}
-                activeDot={{ r: 4.5, fill: '#0FA871', stroke: 'var(--color-surface)', strokeWidth: 2 }}
+                activeDot={{ r: 4.5, fill: 'var(--color-chart-1)', stroke: 'var(--color-surface)', strokeWidth: 2 }}
               />
             </AreaChart>
           </ResponsiveContainer>
@@ -752,13 +746,7 @@ function TabButton({
       title={title ?? label}
       disabled={disabled}
       onClick={onClick}
-      className={cn(
-        'inline-flex h-10 w-10 items-center justify-center rounded-[10px] transition-all duration-[160ms] sm:h-7 sm:w-8',
-        active
-          ? 'border border-border-2 bg-surface text-ink shadow-[0_1px_2px_rgba(16,20,18,.08)] font-semibold'
-          : 'text-ink-3 hover:text-ink-2',
-        disabled && 'cursor-not-allowed opacity-40 hover:text-ink-3',
-      )}
+      className="seg-item seg-icon"
     >
       {children}
     </button>
@@ -812,7 +800,7 @@ function MountainTooltip({
     summitLeader && summitLeader > 0 ? (currentVal / summitLeader) * 100 : null;
 
   return (
-    <div className="min-w-[195px] rounded-[var(--radius-inner)] border border-border bg-surface/95 backdrop-blur-sm px-4 py-3 shadow-[0_10px_30px_-6px_rgba(16,20,18,.20)]">
+    <div className="min-w-[200px] rounded-[16px] border border-border bg-surface/95 backdrop-blur-md px-4 py-3 shadow-[0_18px_40px_-14px_rgba(26,31,27,.3)]">
       <div className="mb-2 flex items-center justify-between gap-2 border-b border-border/60 pb-2">
         <p className="truncate text-[12.5px] font-bold text-ink">{row.name}</p>
         {summitRatio !== null && (
@@ -828,7 +816,7 @@ function MountainTooltip({
             <span className="flex items-center gap-1.5 text-[11.5px] text-ink-3">
               <span
                 aria-hidden="true"
-                className="h-2 w-2 rounded-full bg-[#0FA871]"
+                className="h-2 w-2 rounded-full bg-[var(--color-chart-1)]"
               />
               Lifetime Peak
             </span>
@@ -843,7 +831,7 @@ function MountainTooltip({
             <span className="flex items-center gap-1.5 text-[11.5px] text-ink-3">
               <span
                 aria-hidden="true"
-                className="h-2 w-2 rounded-full bg-[#06B6D4]"
+                className="h-2 w-2 rounded-full bg-[var(--color-chart-2)]"
               />
               30-day Velocity
             </span>
@@ -858,7 +846,7 @@ function MountainTooltip({
             <span className="flex items-center gap-1.5 text-[11.5px] text-ink-3">
               <span
                 aria-hidden="true"
-                className="h-2 w-2 rounded-full bg-[#8B5CF6]"
+                className="h-2 w-2 rounded-full bg-[var(--color-chart-4)]"
               />
               7-day Velocity
             </span>
@@ -873,7 +861,7 @@ function MountainTooltip({
             <span className="flex items-center gap-1.5 text-[11.5px] text-ink-3">
               <span
                 aria-hidden="true"
-                className="h-2 w-2 rounded-full bg-[#F59E0B]"
+                className="h-2 w-2 rounded-full bg-[var(--color-chart-3)]"
               />
               Community Likes
             </span>
@@ -899,7 +887,7 @@ function TrendTooltip({
   if (!point) return null;
 
   return (
-    <div className="min-w-[170px] rounded-[var(--radius-inner)] border border-border bg-surface px-4 py-3 shadow-[0_8px_24px_-8px_rgba(16,20,18,.16)]">
+    <div className="min-w-[170px] rounded-[16px] border border-border bg-surface/95 px-4 py-3 shadow-[0_18px_40px_-14px_rgba(26,31,27,.3)] backdrop-blur-md">
       <p className="mb-2 text-[12px] font-semibold text-ink">
         {new Date(point.at).toLocaleString('en-GB', {
           day: 'numeric',

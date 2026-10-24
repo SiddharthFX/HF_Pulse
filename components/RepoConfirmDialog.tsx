@@ -168,8 +168,8 @@ function DialogBody({ repo, onClose }: { repo: RepoView; onClose: () => void }) 
         tabIndex={-1}
         className={cn(
           'relative flex max-h-[88dvh] w-full flex-col overflow-hidden bg-surface outline-none',
-          'rounded-t-[var(--radius-card)] sm:max-w-[520px] sm:rounded-[var(--radius-card)]',
-          'shadow-[0_24px_64px_-16px_rgba(16,20,18,.28)]',
+          'rounded-t-[24px] sm:max-w-[540px] sm:rounded-[26px]',
+          'shadow-[0_24px_64px_-16px_rgba(26,31,27,.35)] dark:border dark:border-border',
           'animate-[sheet-in_260ms_cubic-bezier(.2,.8,.2,1)_both]',
           'sm:animate-[panel-in_220ms_cubic-bezier(.2,.8,.2,1)_both]',
           'motion-reduce:animate-none',
@@ -185,8 +185,8 @@ function DialogBody({ repo, onClose }: { repo: RepoView; onClose: () => void }) 
           <span
             aria-hidden="true"
             className={cn(
-              'num flex h-12 w-12 shrink-0 items-center justify-center rounded-[var(--radius-inner)]',
-              'text-[15px] font-semibold',
+              'num flex h-12 w-12 shrink-0 items-center justify-center rounded-full',
+              'text-[15px] font-semibold ring-1 ring-black/5 dark:ring-white/10',
               repo.kind === 'model'
                 ? 'bg-jade-50 text-jade-700'
                 : 'bg-surface-2 text-ink-2',
@@ -198,7 +198,7 @@ function DialogBody({ repo, onClose }: { repo: RepoView; onClose: () => void }) 
           <div className="min-w-0 flex-1">
             <h2
               id="repo-dialog-title"
-              className="truncate text-[17px] font-semibold tracking-[-0.01em] text-ink"
+              className="truncate font-display text-[18px] font-semibold tracking-[-0.015em] text-ink"
             >
               {repo.name}
             </h2>

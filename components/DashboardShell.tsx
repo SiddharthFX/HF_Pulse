@@ -1,8 +1,7 @@
 'use client';
 
-import Image from 'next/image';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { AlertTriangle, Clock, ExternalLink, X } from 'lucide-react';
+import { AlertTriangle, Clock, ExternalLink, Layers, X } from 'lucide-react';
 import {
   LS_KEYS,
   ORG_DISPLAY_NAME,
@@ -30,6 +29,8 @@ import { InsightCard } from '@/components/widgets/InsightCard';
 import { RepoHealthGaugeCard } from '@/components/widgets/RepoHealthGaugeCard';
 import { ModelsSection } from '@/components/widgets/ModelsSection';
 import { DatasetsSection } from '@/components/widgets/DatasetsSection';
+import { PromoCard } from '@/components/widgets/PromoCard';
+import { cn } from '@/lib/cn';
 import type { DashboardPayload } from '@/types/hf';
 
 const SECTION_IDS = ['overview', 'activity', 'models', 'datasets'] as const;
@@ -49,10 +50,6 @@ export function DashboardShell({ payload }: { payload: DashboardPayload }) {
 }
 
 function ShellBody({ payload }: { payload: DashboardPayload }) {
-  const [collapsed, setCollapsed] = usePersistentState<boolean>(
-    LS_KEYS.sidebarCollapsed,
-    false,
-  );
   const [drawerOpen, setDrawerOpen] = useState(false);
   const drawerTriggerRef = useRef<HTMLElement | null>(null);
   const openDrawer = useCallback((trigger?: HTMLElement | null) => {
@@ -62,6 +59,10 @@ function ShellBody({ payload }: { payload: DashboardPayload }) {
   }, []);
   const closeDrawer = useCallback(() => setDrawerOpen(false), []);
   const mainContentRef = useRef<HTMLDivElement>(null);
+  const [promoDismissed, setPromoDismissed] = usePersistentState<boolean>(
+    LS_KEYS.promoDismissed,
+    false,
+  );
 
   useSectionObserver(SECTION_IDS, mainContentRef);
 
@@ -88,15 +89,7 @@ function ShellBody({ payload }: { payload: DashboardPayload }) {
     repos.length === 0;
 
   return (
-    <div className="flex h-dvh w-full overflow-hidden bg-page">
-      <div className="hidden h-dvh shrink-0 md:block">
-        <Sidebar
-          datasetCount={payload.datasets.length}
-          collapsed={collapsed}
-          onCollapsedChange={setCollapsed}
-        />
-      </div>
-
+    <div className="flex h-dvh w-full overflow-hidden">
       <MobileDrawer
         open={drawerOpen}
         onClose={closeDrawer}
@@ -104,203 +97,215 @@ function ShellBody({ payload }: { payload: DashboardPayload }) {
       >
         <Sidebar
           datasetCount={payload.datasets.length}
-          collapsed={false}
-          onCollapsedChange={() => undefined}
           variant="drawer"
           onNavigate={() => setDrawerOpen(false)}
         />
       </MobileDrawer>
 
-      <div
-        ref={mainContentRef}
-        data-dashboard-scroll
-        className="flex h-dvh min-w-0 flex-1 flex-col overflow-y-auto"
-      >
-        <header className="sticky top-0 z-30 border-b border-border/70 bg-surface/80 shadow-[0_1px_0_rgba(127,148,135,.12)] backdrop-blur-xl">
-          <div className="mx-auto w-full max-w-[1600px]">
+      <div data-dashboard-scroll className="flex h-dvh min-w-0 flex-1 flex-col overflow-hidden">
+        {/* Floating header pill */}
+        <header className="relative z-30 shrink-0 px-2.5 pt-2.5 sm:px-4 sm:pt-4 lg:px-5">
+          <div className="mx-auto w-full max-w-[1720px] rounded-[26px] border border-border/70 bg-surface/90 shadow-[0_1px_2px_rgba(26,31,27,.04),0_16px_40px_-32px_rgba(26,31,27,.45)] backdrop-blur-xl dark:border-border">
             <Topbar payload={payload} onOpenDrawer={openDrawer} />
           </div>
         </header>
 
-        <main className="min-w-0 flex-1">
-          <div className="mx-auto w-full max-w-[1600px] px-3.5 pb-14 pt-5 sm:px-5 md:px-7 xl:px-8">
-            <FixtureBanner active={payload.isFixture} />
-            <StaleRibbon fetchedAt={payload.fetchedAt} />
+        <div
+          ref={mainContentRef}
+          className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden"
+        >
+          <div className="mx-auto flex w-full max-w-[1720px] gap-5 px-2.5 sm:px-4 lg:px-5">
+            {/* Floating icon rail */}
+            <div className="sticky top-0 hidden h-[calc(100dvh-82px)] w-[60px] shrink-0 py-5 md:block">
+              <Sidebar datasetCount={payload.datasets.length} />
+            </div>
 
-            <section className="relative mb-6 overflow-hidden rounded-[22px] border border-jade-100 bg-[radial-gradient(ellipse_at_top_right,var(--color-jade-50)_0%,var(--color-surface)_72%)] shadow-[0_20px_60px_-42px_rgba(10,92,65,.65)] dark:bg-[radial-gradient(ellipse_at_top_right,var(--color-jade-100)_0%,var(--color-surface)_65%)] sm:rounded-[30px]">
-              <div className="pointer-events-none absolute -right-24 -top-32 h-80 w-80 rounded-full bg-jade-200/40 blur-3xl" />
-              <div className="pointer-events-none absolute -bottom-36 left-[28%] h-72 w-72 rounded-full bg-jade-100/50 blur-3xl" />
-              <div className="pointer-events-none absolute inset-y-0 right-[32%] hidden w-px bg-gradient-to-b from-transparent via-jade-200/60 to-transparent lg:block" />
+            <main className="min-w-0 flex-1 pb-14 pt-5 sm:pt-6">
+              <FixtureBanner active={payload.isFixture} />
+              <StaleRibbon fetchedAt={payload.fetchedAt} />
 
-              <div className="relative grid gap-6 px-4 py-5 sm:px-7 sm:py-7 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:px-8 lg:py-8">
-                <div className="flex min-w-0 items-start gap-3.5 sm:gap-5">
-                  <span className="inline-flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-[18px] border border-jade-100 bg-white shadow-[0_16px_34px_-20px_rgba(10,92,65,.65)] dark:bg-surface-2 sm:h-[72px] sm:w-[72px] sm:rounded-[22px]">
-                    <Image
-                      src="/pluto-logo.webp"
-                      alt={`${ORG_DISPLAY_NAME} logo`}
-                      width={72}
-                      height={72}
-                      className="h-[48px] w-[48px] object-contain dark:hidden sm:h-[64px] sm:w-[64px]"
-                      priority
-                    />
-                    <Image
-                      src="/pluto-logo-dark.webp"
-                      alt=""
-                      width={72}
-                      height={72}
-                      className="hidden h-[48px] w-[48px] object-contain dark:block sm:h-[64px] sm:w-[64px]"
-                      priority
-                    />
-                  </span>
-                  <div className="min-w-0">
-                    <div className="mb-2 flex flex-wrap items-center gap-2 text-[10.5px] font-bold uppercase tracking-[0.12em] text-jade-700 sm:text-[10.5px]">
-                      <span className="inline-flex items-center gap-1.5 rounded-full border border-jade-100 bg-jade-50 px-2 py-0.5 sm:px-2.5 sm:py-1">
-                        <span className="h-1.5 w-1.5 rounded-full bg-jade-500" />
-                        Public Hub snapshot
-                      </span>
-                      <span className="text-ink-3">Refreshes every 12 hours</span>
-                    </div>
-                    <h1 className="text-[25px] font-bold leading-[1.08] tracking-[-0.04em] text-ink sm:text-[38px]">
-                      {ORG_DISPLAY_NAME}
-                    </h1>
-                    <p className="mt-2 max-w-2xl text-[12.5px] leading-5 text-ink-2 sm:text-[13.5px] sm:leading-6">
-                      A focused view of every public model, dataset, and download across your research portfolio.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex flex-col gap-3.5 border-t border-jade-100 pt-4 sm:flex-row sm:items-center sm:gap-4 sm:pt-5 lg:border-l lg:border-t-0 lg:pl-8 lg:pt-0">
-                  <div className="grid min-w-0 flex-1 grid-cols-3 divide-x divide-jade-100 rounded-[18px] border border-jade-100 bg-surface-2 px-1.5 py-2.5 sm:min-w-[300px] sm:px-2 sm:py-3">
-                    <HeroMetric
-                      value={stats.repoCount.total}
-                      label={stats.repoCount.total === 1 ? 'Repository' : 'Repositories'}
-                    />
-                    <HeroMetric value={stats.repoCount.models} label="Models" />
-                    <HeroMetric value={stats.repoCount.datasets} label="Datasets" />
-                  </div>
-                  <a
-                    href={ORG_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex h-11 w-full shrink-0 items-center justify-center gap-2 rounded-[13px] bg-action px-4 text-[12.5px] font-bold text-on-action shadow-[0_12px_24px_-14px_rgba(18,173,118,.95)] transition-[background-color,transform] hover:bg-action-hover active:scale-[.98] sm:w-auto"
-                  >
-                    Open on Hugging Face
-                    <ExternalLink aria-hidden="true" className="h-3.5 w-3.5" strokeWidth={2} />
-                  </a>
-                </div>
-              </div>
-
-              <div className="relative flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-jade-100/80 bg-surface-2/70 px-5 py-3 text-[11px] text-ink-3 sm:px-7 lg:px-8">
-                <span className="flex items-center gap-1.5" suppressHydrationWarning>
-                  <Clock aria-hidden="true" className="h-3.5 w-3.5 text-jade-600" strokeWidth={1.8} />
-                  Last fetched {formatRelativeDate(payload.fetchedAt)}
-                </span>
-                <span className="hidden h-3 w-px bg-jade-100 sm:block" />
-                <span>Data sourced directly from public Hugging Face Hub endpoints</span>
-              </div>
-            </section>
-
-            {totalFailure ? (
-              <ErrorState
-                message="Hugging Face data could not be loaded."
-                detail={
-                  payload.modelsError?.kind === 'rate_limit' ||
-                  payload.datasetsError?.kind === 'rate_limit'
-                    ? 'The Hub rate limit was reached. Data refreshes automatically every 12 hours; you can also retry with the refresh button in the header. Setting HF_TOKEN raises the limit.'
-                    : (payload.modelsError?.error ?? payload.datasetsError?.error)
-                }
+              <Greeting
+                fetchedAt={payload.fetchedAt}
+                total={stats.repoCount.total}
+                models={stats.repoCount.models}
+                datasets={stats.repoCount.datasets}
               />
-            ) : (
-              <div className="space-y-5">
-                <section id="overview" className="scroll-mt-[88px]" aria-label="Key Performance Indicators">
-                  <KpiGrid stats={stats} />
-                </section>
 
-                <section className="grid grid-cols-1 gap-5 xl:grid-cols-12 [&>*>*]:h-full">
-                  <div className="xl:col-span-8">
-                    <DownloadsOverviewCard
-                      repos={repos}
-                      totalLifetime={stats.totalDownloadsAllTime.value}
-                      isPartial={stats.totalDownloadsAllTime.isPartial}
-                      missingCount={stats.totalDownloadsAllTime.missingCount}
-                      snapshots={payload.snapshots}
-                      canShowTrend={payload.canShowTrend}
-                      index={1}
-                    />
-                  </div>
-                  <div className="xl:col-span-4">
-                    <DownloadDistributionCard
+              {totalFailure ? (
+                <ErrorState
+                  className="rounded-[var(--radius-card)] border border-border bg-surface"
+                  message="Hugging Face data could not be loaded."
+                  detail={
+                    payload.modelsError?.kind === 'rate_limit' ||
+                    payload.datasetsError?.kind === 'rate_limit'
+                      ? 'The Hub rate limit was reached. Data refreshes automatically every 12 hours; you can also retry with the refresh button in the header. Setting HF_TOKEN raises the limit.'
+                      : (payload.modelsError?.error ?? payload.datasetsError?.error)
+                  }
+                />
+              ) : (
+                <div className="space-y-4 sm:space-y-5">
+                  <section id="overview" className="scroll-mt-6" aria-label="Key Performance Indicators">
+                    <KpiGrid stats={stats} />
+                  </section>
+
+                  <section className="grid grid-cols-1 gap-4 sm:gap-5 xl:grid-cols-12 [&>*>*]:h-full">
+                    <div className="xl:col-span-8">
+                      <DownloadsOverviewCard
+                        repos={repos}
+                        totalLifetime={stats.totalDownloadsAllTime.value}
+                        isPartial={stats.totalDownloadsAllTime.isPartial}
+                        missingCount={stats.totalDownloadsAllTime.missingCount}
+                        snapshots={payload.snapshots}
+                        canShowTrend={payload.canShowTrend}
+                        index={1}
+                      />
+                    </div>
+                    <div className="xl:col-span-4">
+                      <DownloadDistributionCard
+                        models={payload.models}
+                        datasets={payload.datasets}
+                        index={2}
+                      />
+                    </div>
+                  </section>
+
+                  <section className="grid grid-cols-1 gap-4 sm:gap-5 lg:grid-cols-12 [&>*>*]:h-full">
+                    <div className={cn('lg:col-span-7', !promoDismissed && 'xl:col-span-5')}>
+                      <InsightCard stats={stats} index={3} />
+                    </div>
+                    <div className={cn('lg:col-span-5', !promoDismissed && 'xl:col-span-4')}>
+                      <RepoHealthGaugeCard
+                        models={payload.models}
+                        datasets={payload.datasets}
+                        downloads30d={stats.downloads30d}
+                        modelShare={stats.modelVsDatasetShare}
+                        avgDailyDownloads={stats.avgDailyDownloads}
+                        index={4}
+                      />
+                    </div>
+                    {!promoDismissed ? (
+                      <div className="lg:col-span-12 xl:col-span-3">
+                        <PromoCard onDismiss={() => setPromoDismissed(true)} index={5} />
+                      </div>
+                    ) : null}
+                  </section>
+
+                  <section className="grid grid-cols-1 gap-4 sm:gap-5 lg:grid-cols-2 [&>*>*]:h-full">
+                    <div>
+                      <TopReposCard
+                        models={stats.topModels}
+                        datasets={stats.topDatasets}
+                        rawModels={payload.models}
+                        rawDatasets={payload.datasets}
+                        index={5}
+                      />
+                    </div>
+                    <div id="activity" className="scroll-mt-6">
+                      <RecentActivityCard repos={repos} index={6} />
+                    </div>
+                  </section>
+
+                  <div className="space-y-4 pt-1 sm:space-y-5">
+                    <ModelsSection
                       models={payload.models}
+                      error={payload.modelsError}
+                      index={7}
+                    />
+                    <DatasetsSection
                       datasets={payload.datasets}
-                      index={2}
+                      error={payload.datasetsError}
+                      index={8}
                     />
                   </div>
-                </section>
-
-                <section className="grid grid-cols-1 gap-5 lg:grid-cols-12 [&>*>*]:h-full">
-                  <div className="lg:col-span-7">
-                    <InsightCard stats={stats} index={3} />
-                  </div>
-                  <div className="lg:col-span-5">
-                    <RepoHealthGaugeCard
-                      models={payload.models}
-                      datasets={payload.datasets}
-                      downloads30d={stats.downloads30d}
-                      modelShare={stats.modelVsDatasetShare}
-                      avgDailyDownloads={stats.avgDailyDownloads}
-                      index={4}
-                    />
-                  </div>
-                </section>
-
-                <section className="grid grid-cols-1 gap-5 lg:grid-cols-2 [&>*>*]:h-full">
-                  <div>
-                    <TopReposCard
-                      models={stats.topModels}
-                      datasets={stats.topDatasets}
-                      rawModels={payload.models}
-                      rawDatasets={payload.datasets}
-                      index={5}
-                    />
-                  </div>
-                  <div id="activity" className="scroll-mt-[88px]">
-                    <RecentActivityCard repos={repos} index={6} />
-                  </div>
-                </section>
-
-                <div className="space-y-5 pt-1">
-                  <ModelsSection
-                    models={payload.models}
-                    error={payload.modelsError}
-                    index={7}
-                  />
-                  <DatasetsSection
-                    datasets={payload.datasets}
-                    error={payload.datasetsError}
-                    index={8}
-                  />
                 </div>
-              </div>
-            )}
+              )}
 
-            <Footnotes fetchedAt={payload.fetchedAt} />
+              <Footnotes fetchedAt={payload.fetchedAt} />
+            </main>
           </div>
-        </main>
+        </div>
       </div>
     </div>
   );
 }
 
+/** Replaces the old hero banner — reference's "Welcome Back, Name" row. */
+function Greeting({
+  fetchedAt,
+  total,
+  models,
+  datasets,
+}: {
+  fetchedAt: string;
+  total: number;
+  models: number;
+  datasets: number;
+}) {
+  return (
+    <section
+      aria-labelledby="dashboard-title"
+      className="mb-5 flex flex-col gap-4 sm:mb-6 lg:flex-row lg:items-end lg:justify-between"
+    >
+      <div className="min-w-0 animate-[card-in_420ms_cubic-bezier(.2,.8,.2,1)_both]">
+        <div className="mb-2.5 flex flex-wrap items-center gap-2 text-[10.5px] font-bold uppercase tracking-[0.12em]">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-jade-200/70 bg-jade-50 px-2.5 py-1 text-jade-700">
+            <span className="relative flex h-1.5 w-1.5">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-jade-400 opacity-60 motion-reduce:hidden" />
+              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-jade-500" />
+            </span>
+            Public Hub snapshot
+          </span>
+          <span className="text-ink-3">Refreshes every 12 hours</span>
+        </div>
+        <h1
+          id="dashboard-title"
+          className="text-[30px] font-medium leading-[1.05] tracking-[-0.035em] text-ink sm:text-[40px] xl:text-[44px]"
+        >
+          Welcome back, <span className="text-ink-3">{ORG_DISPLAY_NAME}</span>
+        </h1>
+        <p className="mt-2.5 max-w-2xl text-[13px] leading-6 text-ink-2 sm:text-[14px]">
+          A focused view of every public model, dataset, and download across your research portfolio.
+        </p>
+      </div>
+
+      <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
+        <span
+          className="inline-flex h-11 items-center gap-2 rounded-full border border-border/70 bg-surface px-4 text-[12.5px] font-medium text-ink-2 dark:border-border"
+          suppressHydrationWarning
+        >
+          <Clock aria-hidden="true" className="h-4 w-4 text-jade-600" strokeWidth={1.8} />
+          Last fetched {formatRelativeDate(fetchedAt)}
+        </span>
+        <span className="inline-flex h-11 items-center gap-1 rounded-full border border-border/70 bg-surface py-1 pl-1.5 pr-1.5 text-[12.5px] dark:border-border">
+          <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-jade-50 text-jade-700">
+            <Layers aria-hidden="true" className="h-4 w-4" strokeWidth={1.8} />
+          </span>
+          <HeroMetric value={total} label={total === 1 ? 'Repository' : 'Repositories'} />
+          <span aria-hidden="true" className="h-4 w-px bg-border" />
+          <HeroMetric value={models} label="Models" />
+          <span aria-hidden="true" className="h-4 w-px bg-border" />
+          <HeroMetric value={datasets} label="Datasets" />
+        </span>
+        <a
+          href={ORG_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-full bg-action px-5 text-[13px] font-semibold text-on-action shadow-[0_12px_24px_-14px_color-mix(in_srgb,var(--color-action)_95%,transparent)] transition-[background-color,transform] hover:bg-action-hover active:scale-[.98] sm:w-auto"
+        >
+          Open on Hugging Face
+          <ExternalLink aria-hidden="true" className="h-3.5 w-3.5" strokeWidth={2} />
+        </a>
+      </div>
+    </section>
+  );
+}
+
 function HeroMetric({ value, label }: { value: number; label: string }) {
   return (
-    <div className="min-w-0 px-1 text-center sm:px-4">
-      <p className="num text-[16px] font-bold leading-none tracking-[-0.035em] text-ink sm:text-[20px]">
-        {value}
-      </p>
-      <p className="mt-1 truncate text-[10.5px] font-semibold uppercase tracking-[0.08em] text-ink-3">
-        {label}
-      </p>
-    </div>
+    <span className="inline-flex items-baseline gap-1 px-2">
+      <span className="num font-display text-[15px] font-semibold text-ink">{value}</span>
+      <span className="text-[11.5px] font-medium text-ink-3">{label}</span>
+    </span>
   );
 }
 
@@ -390,9 +395,9 @@ function MobileDrawer({
       <div
         aria-hidden="true"
         onClick={onClose}
-        className="absolute inset-0 bg-[#183128]/25 backdrop-blur-sm animate-[overlay-in_180ms_ease-out_both] motion-reduce:animate-none"
+        className="absolute inset-0 bg-[#141a16]/35 backdrop-blur-sm animate-[overlay-in_180ms_ease-out_both] motion-reduce:animate-none"
       />
-      <div className="absolute left-0 top-0 h-full w-[260px] animate-[panel-in_220ms_cubic-bezier(.2,.8,.2,1)_both] motion-reduce:animate-none">
+      <div className="absolute left-0 top-0 h-full w-[min(290px,calc(100vw-64px))] animate-[drawer-in_240ms_cubic-bezier(.2,.8,.2,1)_both] motion-reduce:animate-none">
         {children}
       </div>
       <IconButton
@@ -400,7 +405,7 @@ function MobileDrawer({
         aria-label="Close navigation"
         size={44}
         onClick={onClose}
-        className="absolute right-3.5 top-3.5 sm:left-[276px] sm:right-auto border-border bg-surface shadow-xl"
+        className="absolute right-3 top-3.5 border-border bg-surface shadow-xl"
       >
         <X aria-hidden="true" className="h-[18px] w-[18px]" strokeWidth={1.8} />
       </IconButton>
@@ -413,14 +418,16 @@ function FixtureBanner({ active }: { active: boolean }) {
   return (
     <div
       role="alert"
-      className="mb-5 flex items-start gap-3 rounded-[16px] border border-clay/35 bg-clay-50 px-4 py-3.5 shadow-[0_10px_30px_-24px_rgba(154,86,37,.7)]"
+      className="mb-5 flex items-start gap-3 rounded-[20px] border border-clay/35 bg-clay-50 px-4 py-3.5"
     >
-      <AlertTriangle
-        aria-hidden="true"
-        className="mt-px h-[18px] w-[18px] shrink-0 text-clay-700"
-        strokeWidth={1.9}
-      />
-      <p className="text-[12.5px] leading-[1.5] text-clay-700">
+      <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-surface/70">
+        <AlertTriangle
+          aria-hidden="true"
+          className="h-4 w-4 text-clay-700"
+          strokeWidth={1.9}
+        />
+      </span>
+      <p className="pt-1 text-[12.5px] leading-[1.5] text-clay-700">
         <strong className="font-bold">FIXTURE DATA — not real.</strong> This
         render is using local development fixtures because{' '}
         <code className="num rounded-md bg-surface/70 px-1.5 py-0.5">HF_FIXTURES=1</code> is set. Unset it to read live
@@ -449,9 +456,11 @@ function StaleRibbon({ fetchedAt }: { fetchedAt: string }) {
   return (
     <div
       role="status"
-      className="mb-5 flex items-center gap-3 rounded-[16px] border border-border bg-surface px-4 py-3.5 shadow-sm"
+      className="mb-5 flex items-center gap-3 rounded-[20px] border border-border bg-surface px-4 py-3"
     >
-      <Clock aria-hidden="true" className="h-4 w-4 shrink-0 text-ink-3" strokeWidth={1.8} />
+      <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-surface-2">
+        <Clock aria-hidden="true" className="h-4 w-4 text-ink-3" strokeWidth={1.8} />
+      </span>
       <p className="text-[12.5px] leading-5 text-ink-2">
         Showing data fetched {formatRelativeDate(fetchedAt)}. The next automatic
         refresh is overdue — use the refresh button to fetch now.
@@ -462,8 +471,8 @@ function StaleRibbon({ fetchedAt }: { fetchedAt: string }) {
 
 function Footnotes({ fetchedAt }: { fetchedAt: string }) {
   return (
-    <footer className="mt-8 rounded-[18px] border border-border bg-surface/80 px-5 py-4 shadow-[0_10px_30px_-28px_rgba(19,32,25,.55)]">
-      <p className="text-[11px] leading-[1.55] text-ink-3">
+    <footer className="mt-8 rounded-[20px] border border-border/70 bg-surface/70 px-5 py-4 dark:border-border">
+      <p className="text-[11px] leading-[1.6] text-ink-3">
         All figures come from the public Hugging Face Hub API.{' '}
         <strong className="font-semibold text-ink-2">Lifetime</strong> and{' '}
         <strong className="font-semibold text-ink-2">30-day</strong> download counts

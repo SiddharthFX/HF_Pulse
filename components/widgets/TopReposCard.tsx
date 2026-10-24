@@ -60,23 +60,18 @@ export function TopReposCard({
   const hasAny = modelEntries.length > 0 || datasetEntries.length > 0;
 
   return (
-    <Card index={index} className="flex flex-col p-4 sm:p-6">
+    <Card index={index} className="flex flex-col p-5 sm:p-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h3 className="text-[16px] font-semibold tracking-[-0.01em] text-ink">
+        <h3 className="font-display text-[17px] font-semibold tracking-[-0.01em] text-ink">
           Top repositories
         </h3>
         <div className="flex items-center gap-2">
-          <div className="flex h-10 items-center rounded-[var(--radius-inner)] bg-surface-2 p-0.5 sm:h-7">
+          <div className="seg">
             <button
               type="button"
               onClick={() => setWindowRange('30d')}
               aria-pressed={windowRange === '30d'}
-              className={cn(
-                'h-9 rounded-[9px] px-3 text-[12.5px] font-medium transition-colors duration-[160ms] sm:h-6 sm:px-2.5 sm:text-[11.5px]',
-                windowRange === '30d'
-                  ? 'bg-surface text-ink shadow-[0_1px_2px_rgba(16,20,18,.06)]'
-                  : 'text-ink-3 hover:text-ink-2',
-              )}
+              className="seg-item"
             >
               30d
             </button>
@@ -84,12 +79,7 @@ export function TopReposCard({
               type="button"
               onClick={() => setWindowRange('all')}
               aria-pressed={windowRange === 'all'}
-              className={cn(
-                'h-9 rounded-[9px] px-3 text-[12.5px] font-medium transition-colors duration-[160ms] sm:h-6 sm:px-2.5 sm:text-[11.5px]',
-                windowRange === 'all'
-                  ? 'bg-surface text-ink shadow-[0_1px_2px_rgba(16,20,18,.06)]'
-                  : 'text-ink-3 hover:text-ink-2',
-              )}
+              className="seg-item"
             >
               Lifetime
             </button>
@@ -97,7 +87,7 @@ export function TopReposCard({
           <button
             type="button"
             onClick={() => scrollToSection('models')}
-            className="inline-flex h-10 items-center gap-1 rounded-[var(--radius-pill)] bg-surface-2 px-3.5 text-[13px] font-medium text-ink-2 transition-colors hover:bg-surface-3 sm:h-7 sm:px-3 sm:text-[12px]"
+            className="inline-flex h-9 items-center gap-1.5 rounded-full border border-border bg-surface-2 px-3.5 text-[12.5px] font-medium text-ink-2 transition-[background-color,border-color,color] hover:border-jade-300 hover:bg-surface hover:text-ink"
           >
             View models ›
           </button>
@@ -174,12 +164,12 @@ function Row({
       <button
         type="button"
         onClick={(event) => openRepo(repo, event.currentTarget)}
-        className="group flex w-full items-center gap-3 rounded-[10px] p-1 text-left transition-colors duration-[140ms] hover:bg-surface-2/70"
+        className="group flex w-full items-center gap-3.5 rounded-[14px] p-2 text-left transition-colors duration-[140ms] hover:bg-surface-2/80"
       >
         <span
           className={cn(
-            'inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-[10px]',
-            'text-[14px] font-semibold',
+            'inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full',
+            'text-[13.5px] font-semibold ring-1 ring-black/5 dark:ring-white/10',
             tone === 'jade' ? 'bg-jade-50 text-jade-700' : 'bg-clay-50 text-clay-700',
           )}
         >
