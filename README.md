@@ -8,6 +8,7 @@
 [![React](https://img.shields.io/badge/React-19-blue?style=for-the-badge&logo=react&logoColor=61DAFB)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.3-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![Cloudflare](https://img.shields.io/badge/Cloudflare-OpenNext-F38020?style=for-the-badge&logo=cloudflare&logoColor=white)](https://opennext.js.org/cloudflare)
 [![Hugging Face](https://img.shields.io/badge/Hugging%20Face-Hub%20API-FFD21E?style=for-the-badge&logo=huggingface&logoColor=black)](https://huggingface.co/Pluto-AI-Labs)
 [![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
 
@@ -16,7 +17,7 @@
 <p align="center">
   <a href="#-features">Features</a> •
   <a href="#-quick-start">Quick Start</a> •
-  <a href="#-data-honesty">Data Honesty</a> •
+  <a href="#-data-honesty-principles">Data Honesty</a> •
   <a href="#-architecture">Architecture</a> •
   <a href="#-scripts">Scripts</a> •
   <a href="#-deployment">Deployment</a>
@@ -30,7 +31,7 @@
 
 **HF Pulse** is a high-performance analytics platform built for tracking repository engagement, velocity, and assets across the [`Pluto-AI-Labs`](https://huggingface.co/Pluto-AI-Labs) portfolio on Hugging Face Hub.
 
-Engineered with **Next.js 15 App Router**, **React 19**, and **Tailwind CSS v4**, HF Pulse requires:
+Engineered with **Next.js 15 App Router**, **React 19**, **Tailwind CSS v4**, and **OpenNext for Cloudflare**, HF Pulse requires:
 - ❌ **No database**
 - ❌ **No authentication or tracking cookies**
 - ❌ **No third-party SaaS analytics**
@@ -42,6 +43,7 @@ It interfaces directly with public Hugging Face endpoints, caches responses via 
 
 ## ✨ Features
 
+- 🌿 **Modern Sage Aesthetic & Floating Pill Navigation:** Refined floating icon rail with elevation stacking, animated tooltips, and a slide-over mobile drawer with full keyboard and focus trap accessibility.
 - 🏔️ **Mountain & Peak Visualizations:** Interactive download elevation charts comparing lifetime downloads, 30-day velocity, and community likes with linear & logarithmic scale controls.
 - ⚖️ **Portfolio Balance Gauge:** Radial gauge breakdown measuring distribution between Models and Datasets across 7d, 30d, 90d, and all-time horizons.
 - 💡 **Narrative Research Insights:** Real-time concentration analysis highlighting top-performing repositories and recent publish recency without marketing fluff.
@@ -49,6 +51,7 @@ It interfaces directly with public Hugging Face endpoints, caches responses via 
 - 🏷️ **Adaptive Collection Views:** Switch seamlessly between responsive Grid and dense Table views, with task-based grouping and sorting.
 - 🌓 **Curated Dark / Light Theme:** Custom HSL color system anchored by rich Jade accents (`#0fa871`), zero flash of unstyled theme (FOUT), and persistent preference storage.
 - 📥 **One-Click JSON Export:** Download the entire Hub telemetry snapshot directly from the topbar.
+- ☁️ **Cloudflare & Edge Ready:** Preconfigured for ultra-fast global edge deployment using OpenNext Cloudflare Workers.
 - 🛡️ **Defensive & Resilient:** Zod schema validation on every API endpoint with isolated failure boundaries — if models rate-limit, datasets continue to render uninterrupted.
 
 ---
@@ -137,7 +140,7 @@ HF_Pulse/
 │   ├── shell/
 │   │   ├── SearchField.tsx      # Fuzzy ⌘K search combobox
 │   │   ├── ShellContext.tsx     # Context & modal manager
-│   │   ├── Sidebar.tsx          # Collapsible navigation & drawer
+│   │   ├── Sidebar.tsx          # Floating navigation rail & mobile drawer
 │   │   └── Topbar.tsx           # Global actions, refresh & theme toggles
 │   ├── ui/                      # Primitive accessible UI components
 │   └── widgets/
@@ -147,6 +150,7 @@ HF_Pulse/
 │       ├── KpiGrid.tsx                  # Top-line metrics
 │       ├── ModelsSection.tsx            # Model repository collection
 │       ├── DatasetsSection.tsx          # Dataset repository collection
+│       ├── PromoCard.tsx                # Public research hub callout
 │       ├── RecentActivityCard.tsx       # Chronological update ledger
 │       ├── RepoHealthGaugeCard.tsx      # Radial portfolio balance gauge
 │       └── TopReposCard.tsx             # Ranked leaders by downloads
@@ -160,6 +164,8 @@ HF_Pulse/
 │       ├── payload.ts           # Unified payload composer
 │       ├── queries.ts           # Hub query composers
 │       └── schemas.ts           # Zod response validation
+├── open-next.config.ts          # OpenNext Cloudflare configuration
+├── wrangler.jsonc               # Cloudflare Workers configuration
 └── types/
     └── hf.ts                    # Shared domain type definitions
 ```
@@ -175,6 +181,8 @@ HF_Pulse/
 | `npm start` | Runs the compiled production server |
 | `npm run lint` | Runs Next.js ESLint verification |
 | `npm run typecheck` | Executes `tsc --noEmit` strict mode check |
+| `npm run cf:build` | Compiles the application bundle for Cloudflare via OpenNext |
+| `npm run cf:deploy` | Builds and deploys directly to Cloudflare Workers via Wrangler |
 
 ---
 
@@ -192,7 +200,23 @@ This injects simulated local fixtures from `lib/hf/fixtures.ts` and renders a pr
 
 ## 🚢 Deployment
 
-Deploy to any platform that supports **Next.js 15** (Vercel, Node server, Docker, Railway, Fly.io):
+### 1. Cloudflare Workers / Pages (OpenNext)
+
+Deploy to Cloudflare's global edge network using the included OpenNext configuration:
+
+```bash
+# Build the Cloudflare Worker bundle
+npm run cf:build
+
+# Deploy to Cloudflare Workers
+npm run cf:deploy
+```
+
+Ensure `HF_TOKEN` is configured as a secret in your Cloudflare dashboard or via `wrangler secret put HF_TOKEN`.
+
+### 2. Vercel, Node, or Docker
+
+Deploy to any platform that supports **Next.js 15**:
 
 1. Set `HF_TOKEN` in your hosting provider's Environment Variables (optional, for higher rate limits).
 2. The application will automatically statically pre-render the dashboard and revalidate in the background every 12 hours.
