@@ -116,7 +116,7 @@ function ShellBody({ payload }: { payload: DashboardPayload }) {
         >
           <div className="mx-auto flex w-full max-w-[1720px] gap-5 px-2.5 sm:px-4 lg:px-5">
             {/* Floating icon rail */}
-            <div className="sticky top-0 hidden h-[calc(100dvh-82px)] w-[60px] shrink-0 py-5 md:block">
+            <div className="sticky top-0 z-20 hidden h-[calc(100dvh-82px)] w-[60px] shrink-0 py-5 md:block">
               <Sidebar datasetCount={payload.datasets.length} />
             </div>
 

@@ -313,7 +313,7 @@ function DrawerPanel({
               type="button"
               onClick={onToggleGrouping}
               aria-pressed={groupModelsByTask}
-              className={cn(drawerRowClass, 'gap-3', groupModelsByTask ? 'bg-jade-50 text-jade-900' : drawerIdle)}
+              className={cn(drawerRowClass, 'gap-3', groupModelsByTask ? drawerActive : drawerIdle)}
             >
               <LayoutList aria-hidden="true" className="h-[18px] w-[18px] shrink-0" strokeWidth={1.8} />
               <span className="truncate">Group by task</span>
